@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package cinema;
+
+service Cinema {
+    rpc CreateHall(CreateHallRequest) returns (CreateHallResult);
+    rpc DeleteHall(DeleteHallRequest) returns (DeleteHallResult);
+    rpc GetHallList(GetHallListRequest) returns (GetHallListResult);
+}
+
+message CreateHallRequest {
+    string name = 1;
+    int32 rows = 2;
+    int32 cols = 3;
+}
+
+message CreateHallResult {
+    int32 id = 1;
+}
+
+message DeleteHallRequest {
+    int32 id = 1;
+}
+
+message DeleteHallResult {
+    bool successful = 1;
+}
+
+message GetHallListRequest {
+
+}
+
+message GetHallListResult {
+    repeated CinemaHall cHall = 1;
+}
+
+message CinemaHall {
+    int32 id = 1;
+    string name = 2;
+    int32 rows = 3;
+    int32 cols = 4;
+}
