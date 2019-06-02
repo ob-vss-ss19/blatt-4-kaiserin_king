@@ -1,6 +1,9 @@
-package user
+package main
 
 import (
+	"context"
+	"log"
+
 	"github.com/micro/go-micro"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 )
