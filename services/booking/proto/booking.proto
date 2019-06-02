@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package booking;
+
+service Booking {
+    rpc DeleteBooking(DeleteBookingRequest) returns (DeleteBookingResult) {}
+    rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResult) {}
+    rpc ConfirmBooking(ConfirmBookingRequest) returns (ConfirmBookingResult) {}
+}
+
+message DeleteBookingRequest {
+    int32 id = 1;
+}
+
+message DeleteBookingResult {
+    bool successful = 1;
+}
+
+message CreateBookingRequest {
+    int32 userID = 1;
+    int32 showID = 2;
+    int32 seats = 3;
+}
+
+message CreateBookingResult {
+    int32 id = 1;
+}
+
+message ConfirmBookingRequest {
+    int32 id = 1;
+}
+
+message ConfirmBookingResult {
+    bool successful = 1;
+}
+
+message BookingData {
+    int32 id = 1;
+    int32 userID = 2;
+    int32 showID = 3;
+    int32 seats = 4;
+}
