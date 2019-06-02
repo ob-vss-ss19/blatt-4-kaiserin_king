@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package show;
+
+service Show {
+    rpc DeleteShow(DeleteShowRequest) returns (DeleteShowResult) {}
+    rpc CreateShow(CreateShowRequest) returns (CreateShowResult) {}
+}
+
+message DeleteShowRequest {
+    int32 id = 1;
+}
+
+message DeleteShowResult {
+    bool successful = 1;
+}
+
+message CreateShowRequest {
+    int32 movieID = 1;
+    int32 hallID = 2;
+}
+
+message CreateShowResult {
+    int32 id = 1;
+}
+
+message ShowData {
+    int32 id = 1;
+    int32 movieID = 2;
+    int32 hallID = 3;
+}
