@@ -34,7 +34,7 @@ func main() {
 	)
 
 	service.Init()
-	show.RegisterShowHandler(service.Server(), &SService{Show: make([]*show.ShowData, 0), nextID: 0})
+	show.RegisterShowHandler(service.Server(), &SService{show: make([]*show.ShowData, 0), nextID: 0})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
