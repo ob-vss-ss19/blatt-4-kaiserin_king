@@ -34,7 +34,7 @@ func (cs *CService) GetHallList(ctx context.Context, req *cinema.GetHallListRequ
 
 func main() {
 	service := micro.NewService(
-		micro.Name("go.micro.services.user"),
+		micro.Name("go.micro.services.cinema"),
 	)
 
 	service.Init()
