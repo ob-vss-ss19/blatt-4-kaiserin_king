@@ -1,4 +1,5 @@
-package movie
+package main
+
 
 import (
 	"log"
@@ -33,7 +34,7 @@ func main() {
 	)
 
 	service.Init()
-	movie.RegisterMovieHandler(service.Server(), &MService{Movie: make([]*movie.MovieData, 0), nextID: 0})
+	movie.RegisterMovieHandler(service.Server(), &MService{movie: make([]*movie.MovieData, 0), nextID: 0})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
