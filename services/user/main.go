@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/micro/go-micro/client"
+	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	"log"
 
 	"github.com/micro/go-micro"
@@ -19,13 +21,27 @@ func (us *UService) CreateUser(ctx context.Context, req *user.CreateUserRequest,
 	us.nextID++
 	us.user = append(us.user, &user.UserData{Name: req.Name, Id: givenID})
 	rsp.Id = givenID
-	fmt.Printf("got name: %v", req.Name)
 
 	return nil
 }
 
 func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest, rsp *user.DeleteUserResult) error {
 	// delete only if no bookings
+
+	var client client.Client
+	userC := booking.NewBookingService("go.micro.services.booking", client)
+
+	bookingRsp, err := userC.AskBookingOfUser(context.TODO(), &booking.AskBookingOfUserRequest{UserID: req.Id})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(bookingRsp.NoBookings)
+
+	if bookingRsp.NoBookings {
+		// kann geloescht werden, da keine Reservierungen vorhanden für aktuellen user
+	}
+
 	return nil
 }
 

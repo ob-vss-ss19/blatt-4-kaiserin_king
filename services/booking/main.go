@@ -34,6 +34,11 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 	return nil
 }
 
+func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.DeleteBookingRequest, rsp *booking.DeleteBookingResult) error {
+	// look if there are bookings of userID
+	return nil
+}
+
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.booking"),

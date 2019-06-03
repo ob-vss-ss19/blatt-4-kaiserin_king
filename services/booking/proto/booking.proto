@@ -6,6 +6,7 @@ service Booking {
     rpc DeleteBooking(DeleteBookingRequest) returns (DeleteBookingResult) {}
     rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResult) {}
     rpc ConfirmBooking(ConfirmBookingRequest) returns (ConfirmBookingResult) {}
+    rpc AskBookingOfUser(AskBookingOfUserRequest) returns (AskBookingOfUserResult) {}
 }
 
 message DeleteBookingRequest {
@@ -32,6 +33,14 @@ message ConfirmBookingRequest {
 
 message ConfirmBookingResult {
     bool successful = 1;
+}
+
+message AskBookingOfUserRequest {
+    int32 userId = 1;
+}
+
+message AskBookingOfUserResult {
+    bool noBookings = 1;
 }
 
 message BookingData {
