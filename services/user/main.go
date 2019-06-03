@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/micro/go-micro"
@@ -18,6 +19,7 @@ func (us *UService) CreateUser(ctx context.Context, req *user.CreateUserRequest,
 	us.nextID++
 	us.user = append(us.user, &user.UserData{Name: req.Name, Id: givenID})
 	rsp.Id = givenID
+	fmt.Printf("got name: %v", req.Name)
 
 	return nil
 }
