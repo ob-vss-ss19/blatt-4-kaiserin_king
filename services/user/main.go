@@ -40,8 +40,13 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 
 	if bookingRsp.NoBookings {
 		// kann geloescht werden, da keine Reservierungen vorhanden für aktuellen user
+		for i, v := range us.user {
+			if v.Id == req.Id {
+				us.user = append(us.user[:i], us.user[i+1:]...)
+				return nil;
+			}
+		}
 	}
-
 	return nil
 }
 
