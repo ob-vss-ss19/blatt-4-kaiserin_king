@@ -77,6 +77,11 @@ func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookin
 	return nil
 }
 
+func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDeleteRequest, rsp *booking.FromShowDeleteResult) error {
+	// delete show with id
+	return nil
+}
+
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.booking"),

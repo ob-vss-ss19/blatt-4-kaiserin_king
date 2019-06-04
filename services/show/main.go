@@ -2,6 +2,9 @@ package main
 
 
 import (
+	"fmt"
+	"github.com/micro/go-micro/client"
+	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	"log"
 	"context"
 
@@ -28,9 +31,27 @@ func (shs *SService) DeleteShow(ctx context.Context, req *show.DeleteShowRequest
 	return nil
 }
 
-func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowRequest, rsp *show.DeleteShowResult) error {
-	//Got the Id of an Hall which nolonger exists
+func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfHallRequest, rsp *show.DeleteShowOfHallResult) error {
+	//Got the Id of an Hall which no longer exists
 	return nil
+}
+
+func (shs *SService) delete(ids []int32) {
+	for _, id := range ids {
+		for i, v := range shs.show {
+			if v.Id == id {
+				shs.show = append(shs.show[:i], shs.show[i+1:]...)
+
+				var client client.Client
+				bookingC := booking.NewBookingService("go.micro.services.booking", client)
+
+				_, err := bookingC.FromShowDelete(context.TODO(), &show.FromShowDeleteRequest{ID: req.Id})
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
+		}
+	}
 }
 
 func main() {
