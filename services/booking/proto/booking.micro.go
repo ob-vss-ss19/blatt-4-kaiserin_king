@@ -38,6 +38,7 @@ type BookingService interface {
 	CreateBooking(ctx context.Context, in *CreateBookingRequest, opts ...client.CallOption) (*CreateBookingResult, error)
 	ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, opts ...client.CallOption) (*ConfirmBookingResult, error)
 	AskBookingOfUser(ctx context.Context, in *AskBookingOfUserRequest, opts ...client.CallOption) (*AskBookingOfUserResult, error)
+	FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, opts ...client.CallOption) (*FromShowDeleteResult, error)
 }
 
 type bookingService struct {
@@ -98,6 +99,16 @@ func (c *bookingService) AskBookingOfUser(ctx context.Context, in *AskBookingOfU
 	return out, nil
 }
 
+func (c *bookingService) FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, opts ...client.CallOption) (*FromShowDeleteResult, error) {
+	req := c.c.NewRequest(c.name, "Booking.FromShowDelete", in)
+	out := new(FromShowDeleteResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Booking service
 
 type BookingHandler interface {
@@ -105,6 +116,7 @@ type BookingHandler interface {
 	CreateBooking(context.Context, *CreateBookingRequest, *CreateBookingResult) error
 	ConfirmBooking(context.Context, *ConfirmBookingRequest, *ConfirmBookingResult) error
 	AskBookingOfUser(context.Context, *AskBookingOfUserRequest, *AskBookingOfUserResult) error
+	FromShowDelete(context.Context, *FromShowDeleteRequest, *FromShowDeleteResult) error
 }
 
 func RegisterBookingHandler(s server.Server, hdlr BookingHandler, opts ...server.HandlerOption) error {
@@ -113,6 +125,7 @@ func RegisterBookingHandler(s server.Server, hdlr BookingHandler, opts ...server
 		CreateBooking(ctx context.Context, in *CreateBookingRequest, out *CreateBookingResult) error
 		ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, out *ConfirmBookingResult) error
 		AskBookingOfUser(ctx context.Context, in *AskBookingOfUserRequest, out *AskBookingOfUserResult) error
+		FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, out *FromShowDeleteResult) error
 	}
 	type Booking struct {
 		booking
@@ -139,4 +152,8 @@ func (h *bookingHandler) ConfirmBooking(ctx context.Context, in *ConfirmBookingR
 
 func (h *bookingHandler) AskBookingOfUser(ctx context.Context, in *AskBookingOfUserRequest, out *AskBookingOfUserResult) error {
 	return h.BookingHandler.AskBookingOfUser(ctx, in, out)
+}
+
+func (h *bookingHandler) FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, out *FromShowDeleteResult) error {
+	return h.BookingHandler.FromShowDelete(ctx, in, out)
 }

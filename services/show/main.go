@@ -45,7 +45,7 @@ func (shs *SService) delete(ids []int32) {
 				var client client.Client
 				bookingC := booking.NewBookingService("go.micro.services.booking", client)
 
-				_, err := bookingC.FromShowDelete(context.TODO(), &show.FromShowDeleteRequest{ID: req.Id})
+				_, err := bookingC.FromShowDelete(context.TODO(), &booking.FromShowDeleteRequest{Id: id})
 				if err != nil {
 					fmt.Println(err)
 				}
