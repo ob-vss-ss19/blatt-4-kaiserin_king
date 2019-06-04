@@ -5,6 +5,7 @@ package show;
 service Show {
     rpc DeleteShow(DeleteShowRequest) returns (DeleteShowResult) {}
     rpc CreateShow(CreateShowRequest) returns (CreateShowResult) {}
+    rpc FromHallDelete(DeleteShowOfHallRequest) returns (DeleteShowOfHallResult) {}
 }
 
 message DeleteShowRequest {
@@ -18,6 +19,14 @@ message DeleteShowResult {
 message CreateShowRequest {
     int32 movieID = 1;
     int32 hallID = 2;
+}
+
+message DeleteShowOfHallRequest {
+    int32 hallID = 1;
+}
+
+message DeleteShowOfHallResult {
+    bool successful = 1;
 }
 
 message CreateShowResult {

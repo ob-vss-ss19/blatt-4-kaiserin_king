@@ -28,6 +28,11 @@ func (shs *SService) DeleteShow(ctx context.Context, req *show.DeleteShowRequest
 	return nil
 }
 
+func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowRequest, rsp *show.DeleteShowResult) error {
+	//Got the Id of an Hall which nolonger exists
+	return nil
+}
+
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.show"),

@@ -36,6 +36,7 @@ var _ server.Option
 type ShowService interface {
 	DeleteShow(ctx context.Context, in *DeleteShowRequest, opts ...client.CallOption) (*DeleteShowResult, error)
 	CreateShow(ctx context.Context, in *CreateShowRequest, opts ...client.CallOption) (*CreateShowResult, error)
+	FromHallDelete(ctx context.Context, in *DeleteShowOfHallRequest, opts ...client.CallOption) (*DeleteShowOfHallResult, error)
 }
 
 type showService struct {
@@ -76,17 +77,29 @@ func (c *showService) CreateShow(ctx context.Context, in *CreateShowRequest, opt
 	return out, nil
 }
 
+func (c *showService) FromHallDelete(ctx context.Context, in *DeleteShowOfHallRequest, opts ...client.CallOption) (*DeleteShowOfHallResult, error) {
+	req := c.c.NewRequest(c.name, "Show.FromHallDelete", in)
+	out := new(DeleteShowOfHallResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Show service
 
 type ShowHandler interface {
 	DeleteShow(context.Context, *DeleteShowRequest, *DeleteShowResult) error
 	CreateShow(context.Context, *CreateShowRequest, *CreateShowResult) error
+	FromHallDelete(context.Context, *DeleteShowOfHallRequest, *DeleteShowOfHallResult) error
 }
 
 func RegisterShowHandler(s server.Server, hdlr ShowHandler, opts ...server.HandlerOption) error {
 	type show interface {
 		DeleteShow(ctx context.Context, in *DeleteShowRequest, out *DeleteShowResult) error
 		CreateShow(ctx context.Context, in *CreateShowRequest, out *CreateShowResult) error
+		FromHallDelete(ctx context.Context, in *DeleteShowOfHallRequest, out *DeleteShowOfHallResult) error
 	}
 	type Show struct {
 		show
@@ -105,4 +118,8 @@ func (h *showHandler) DeleteShow(ctx context.Context, in *DeleteShowRequest, out
 
 func (h *showHandler) CreateShow(ctx context.Context, in *CreateShowRequest, out *CreateShowResult) error {
 	return h.ShowHandler.CreateShow(ctx, in, out)
+}
+
+func (h *showHandler) FromHallDelete(ctx context.Context, in *DeleteShowOfHallRequest, out *DeleteShowOfHallResult) error {
+	return h.ShowHandler.FromHallDelete(ctx, in, out)
 }
