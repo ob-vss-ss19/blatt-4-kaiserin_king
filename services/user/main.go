@@ -31,7 +31,7 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 	var client client.Client
 	userC := booking.NewBookingService("go.micro.services.booking", client)
 
-	bookingRsp, err := userC.AskBookingOfUser(context.TODO(), &booking.AskBookingOfUserRequest{UserID: req.Id})
+	bookingRsp, err := userC.AskBookingOfUser(context.TODO(), &booking.AskBookingOfUserRequest{UserId: req.Id})
 	if err != nil {
 		fmt.Println(err)
 	}

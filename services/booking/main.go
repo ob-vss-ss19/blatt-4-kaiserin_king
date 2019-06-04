@@ -34,7 +34,7 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 	return nil
 }
 
-func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.DeleteBookingRequest, rsp *booking.DeleteBookingResult) error {
+func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookingOfUserRequest, rsp *booking.AskBookingOfUserResult) error {
 	// look if there are bookings of userID
 	return nil
 }
@@ -45,7 +45,7 @@ func main() {
 	)
 
 	service.Init()
-	booking.RegisterBookingHandler(service.Server(), &BService{booking: make([]*booking.BookingData, 0), nextID: 0})
+	booking.RegisterBookingHandler(service.Server(), &BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 0})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())

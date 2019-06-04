@@ -37,6 +37,7 @@ type BookingService interface {
 	DeleteBooking(ctx context.Context, in *DeleteBookingRequest, opts ...client.CallOption) (*DeleteBookingResult, error)
 	CreateBooking(ctx context.Context, in *CreateBookingRequest, opts ...client.CallOption) (*CreateBookingResult, error)
 	ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, opts ...client.CallOption) (*ConfirmBookingResult, error)
+	AskBookingOfUser(ctx context.Context, in *AskBookingOfUserRequest, opts ...client.CallOption) (*AskBookingOfUserResult, error)
 }
 
 type bookingService struct {
@@ -87,12 +88,23 @@ func (c *bookingService) ConfirmBooking(ctx context.Context, in *ConfirmBookingR
 	return out, nil
 }
 
+func (c *bookingService) AskBookingOfUser(ctx context.Context, in *AskBookingOfUserRequest, opts ...client.CallOption) (*AskBookingOfUserResult, error) {
+	req := c.c.NewRequest(c.name, "Booking.AskBookingOfUser", in)
+	out := new(AskBookingOfUserResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Booking service
 
 type BookingHandler interface {
 	DeleteBooking(context.Context, *DeleteBookingRequest, *DeleteBookingResult) error
 	CreateBooking(context.Context, *CreateBookingRequest, *CreateBookingResult) error
 	ConfirmBooking(context.Context, *ConfirmBookingRequest, *ConfirmBookingResult) error
+	AskBookingOfUser(context.Context, *AskBookingOfUserRequest, *AskBookingOfUserResult) error
 }
 
 func RegisterBookingHandler(s server.Server, hdlr BookingHandler, opts ...server.HandlerOption) error {
@@ -100,6 +112,7 @@ func RegisterBookingHandler(s server.Server, hdlr BookingHandler, opts ...server
 		DeleteBooking(ctx context.Context, in *DeleteBookingRequest, out *DeleteBookingResult) error
 		CreateBooking(ctx context.Context, in *CreateBookingRequest, out *CreateBookingResult) error
 		ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, out *ConfirmBookingResult) error
+		AskBookingOfUser(ctx context.Context, in *AskBookingOfUserRequest, out *AskBookingOfUserResult) error
 	}
 	type Booking struct {
 		booking
@@ -122,4 +135,8 @@ func (h *bookingHandler) CreateBooking(ctx context.Context, in *CreateBookingReq
 
 func (h *bookingHandler) ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, out *ConfirmBookingResult) error {
 	return h.BookingHandler.ConfirmBooking(ctx, in, out)
+}
+
+func (h *bookingHandler) AskBookingOfUser(ctx context.Context, in *AskBookingOfUserRequest, out *AskBookingOfUserResult) error {
+	return h.BookingHandler.AskBookingOfUser(ctx, in, out)
 }
