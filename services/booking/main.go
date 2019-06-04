@@ -36,6 +36,19 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 
 func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookingOfUserRequest, rsp *booking.AskBookingOfUserResult) error {
 	// look if there are bookings of userID
+	for _, b := range bs.booking {
+		if b.UserID == req.UserId {
+			rsp.NoBookings = false
+			return nil
+		}
+	}
+	for _, b := range bs.notConfirmed {
+		if b.UserID == req.UserId {
+			rsp.NoBookings = false
+			return nil
+		}
+	}
+	rsp.NoBookings = true
 	return nil
 }
 
