@@ -27,30 +27,39 @@ func (shs *SService) CreateShow(ctx context.Context, req *show.CreateShowRequest
 }
 
 func (shs *SService) DeleteShow(ctx context.Context, req *show.DeleteShowRequest, rsp *show.DeleteShowResult) error {
-	// delete movie and hall ?
+	for i, v := range shs.show {
+		if v.Id == req.Id {
+			shs.delete(i, v.Id)
+			rsp.Successful = true
+			return nil
+		}
+	}
+	rsp.Successful = false
 	return nil
 }
 
 func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfHallRequest, rsp *show.DeleteShowOfHallResult) error {
 	//Got the Id of an Hall which no longer exists
+	for i, v := range shs.show {
+		if v.HallID == req.HallID {
+			shs.delete(i, v.Id)
+			rsp.Successful = true
+			return nil
+		}
+	}
+	rsp.Successful = false
 	return nil
 }
 
-func (shs *SService) delete(ids []int32) {
-	for _, id := range ids {
-		for i, v := range shs.show {
-			if v.Id == id {
-				shs.show = append(shs.show[:i], shs.show[i+1:]...)
+func (shs *SService) delete(index int, showID int32) {
+	shs.show = append(shs.show[:index], shs.show[index+1:]...)
 
-				var client client.Client
-				bookingC := booking.NewBookingService("go.micro.services.booking", client)
+	var client client.Client
+	bookingC := booking.NewBookingService("go.micro.services.booking", client)
 
-				_, err := bookingC.FromShowDelete(context.TODO(), &booking.FromShowDeleteRequest{Id: id})
-				if err != nil {
-					fmt.Println(err)
-				}
-			}
-		}
+	_, err := bookingC.FromShowDelete(context.TODO(), &booking.FromShowDeleteRequest{Id: showID})
+	if err != nil {
+		fmt.Println(err)
 	}
 }
 
