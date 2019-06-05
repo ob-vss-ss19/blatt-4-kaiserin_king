@@ -33,7 +33,7 @@ func (bs *BService) DeleteBooking(ctx context.Context, req *booking.DeleteBookin
 	for i, b := range bs.booking {
 		if b.Id == req.Id {
 			//bs.booking = append(bs.booking[:i], bs.booking[i+1:]...)
-			bs.deleteFromBooking(i, b.UserID)
+			bs.deleteFromBooking(i, b.UserID, b.Id)
 			rsp.Successful = true
 			return nil
 		}
@@ -41,7 +41,7 @@ func (bs *BService) DeleteBooking(ctx context.Context, req *booking.DeleteBookin
 	for i, b := range bs.notConfirmed {
 		if b.Id == req.Id {
 			//bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
-			bs.deleteFromNotConfirmed(i, b.UserID)
+			bs.deleteFromNotConfirmed(i, b.UserID, b.Id)
 			rsp.Successful = true
 			return nil
 		}
