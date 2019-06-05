@@ -119,7 +119,7 @@ func (bs *BService) informUser(userID int32, bookingID int32) {
 	var client client.Client
 	userC := user.NewUserService("go.micro.services.user", client)
 
-	_, err := userC.BookingDeleted(context.TODO(), &booking.BookingDeletedRequest{UserID: userID, BookingID: bookingID})
+	_, err := userC.BookingDeleted(context.TODO(), &user.BookingDeletedRequest{UserID: userID, BookingID: bookingID})
 	if err != nil {
 		fmt.Println(err)
 	}
