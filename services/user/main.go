@@ -50,6 +50,10 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 	return nil
 }
 
+func (us *UService) BookingDeleted (ctx context.Context, req *user.BookingDeletedRequest, rsp *user.BookingDeletedResult) error {
+	return nil
+}
+
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.user"),

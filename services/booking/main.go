@@ -2,6 +2,9 @@ package main
 
 
 import (
+	"fmt"
+	"github.com/micro/go-micro/client"
+	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 	"log"
 	"context"
 
@@ -25,17 +28,20 @@ func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookin
 }
 
 func (bs *BService) DeleteBooking(ctx context.Context, req *booking.DeleteBookingRequest, rsp *booking.DeleteBookingResult) error {
+	// TODO: Inform user that booking was deleted
 	// Delete from booking or notConfirmed list
 	for i, b := range bs.booking {
 		if b.Id == req.Id {
-			bs.booking = append(bs.booking[:i], bs.booking[i+1:]...)
+			//bs.booking = append(bs.booking[:i], bs.booking[i+1:]...)
+			bs.deleteFromBooking(i, b.UserID)
 			rsp.Successful = true
 			return nil
 		}
 	}
 	for i, b := range bs.notConfirmed {
 		if b.Id == req.Id {
-			bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
+			//bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
+			bs.deleteFromNotConfirmed(i, b.UserID)
 			rsp.Successful = true
 			return nil
 		}
@@ -78,8 +84,45 @@ func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookin
 }
 
 func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDeleteRequest, rsp *booking.FromShowDeleteResult) error {
-	// delete show with id
+	// delete show with id -> delete bookings
+	for i, b := range bs.booking {
+		if b.ShowID == req.Id {
+			//bs.booking = append(bs.booking[:i], bs.booking[i+1:]...)
+			bs.deleteFromBooking(i, b.UserID)
+			rsp.Successful = true
+			return nil
+		}
+	}
+	for i, b := range bs.notConfirmed {
+		if b.ShowID == req.Id {
+			//bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
+			bs.deleteFromNotConfirmed(i, b.UserID)
+			rsp.Successful = true
+			return nil
+		}
+	}
+	rsp.Successful = false
 	return nil
+}
+
+func (bs *BService) deleteFromNotConfirmed(index int, userID int32, bookingID int32) {
+	bs.notConfirmed = append(bs.notConfirmed[:index], bs.notConfirmed[index+1:]...)
+	bs.informUser(userID, bookingID)
+}
+
+func (bs *BService) deleteFromBooking(index int, userID int32, bookingID int32) {
+	bs.booking = append(bs.booking[:index], bs.booking[index+1:]...)
+	bs.informUser(userID, bookingID)
+}
+
+func (bs *BService) informUser(userID int32, bookingID int32) {
+	var client client.Client
+	userC := user.NewUserService("go.micro.services.user", client)
+
+	_, err := userC.BookingDeleted(context.TODO(), &booking.BookingDeletedRequest{UserID: userID, BookingID: bookingID})
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 func main() {

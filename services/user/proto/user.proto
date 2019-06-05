@@ -5,6 +5,7 @@ package user;
 service User {
     rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResult) {}
     rpc CreateUser(CreateUserRequest) returns (CreateUserResult) {}
+    rpc BookingDeleted(BookingDeletedRequest) returns (BookingDeletedResult) {}
 }
 
 message DeleteUserRequest {
@@ -21,6 +22,14 @@ message CreateUserRequest {
 
 message CreateUserResult {
     int32 id = 1;
+}
+
+message BookingDeletedRequest {
+    int32 userID = 1;
+    int32 bookingID = 2;
+}
+
+message BookingDeletedResult {
 }
 
 message UserData {

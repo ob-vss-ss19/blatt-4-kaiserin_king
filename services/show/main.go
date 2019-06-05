@@ -44,7 +44,8 @@ func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfH
 		if v.HallID == req.HallID {
 			shs.delete(i, v.Id)
 			rsp.Successful = true
-			return nil
+			// maybe more shows in one hall
+			// return nil
 		}
 	}
 	rsp.Successful = false
