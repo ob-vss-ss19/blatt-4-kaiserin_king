@@ -39,16 +39,15 @@ func (shs *SService) DeleteShow(ctx context.Context, req *show.DeleteShowRequest
 }
 
 func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfHallRequest, rsp *show.DeleteShowOfHallResult) error {
+	success := false
 	//Got the Id of an Hall which no longer exists
 	for i, v := range shs.show {
 		if v.HallID == req.HallID {
 			shs.delete(i, v.Id)
-			rsp.Successful = true
-			// maybe more shows in one hall
-			// return nil
+			success = true
 		}
 	}
-	rsp.Successful = false
+	rsp.Successful = success
 	return nil
 }
 

@@ -84,24 +84,24 @@ func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookin
 }
 
 func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDeleteRequest, rsp *booking.FromShowDeleteResult) error {
+	success := false
+
 	// delete show with id -> delete bookings
 	for i, b := range bs.booking {
 		if b.ShowID == req.Id {
 			//bs.booking = append(bs.booking[:i], bs.booking[i+1:]...)
-			bs.deleteFromBooking(i, b.UserID)
-			rsp.Successful = true
-			return nil
+			bs.deleteFromBooking(i, b.UserID, b.Id)
+			success = true
 		}
 	}
 	for i, b := range bs.notConfirmed {
 		if b.ShowID == req.Id {
 			//bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
-			bs.deleteFromNotConfirmed(i, b.UserID)
-			rsp.Successful = true
-			return nil
+			bs.deleteFromNotConfirmed(i, b.UserID, b.Id)
+			success = true
 		}
 	}
-	rsp.Successful = false
+	rsp.Successful = success
 	return nil
 }
 

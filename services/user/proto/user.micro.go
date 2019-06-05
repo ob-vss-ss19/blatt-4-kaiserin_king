@@ -36,6 +36,7 @@ var _ server.Option
 type UserService interface {
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...client.CallOption) (*DeleteUserResult, error)
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...client.CallOption) (*CreateUserResult, error)
+	BookingDeleted(ctx context.Context, in *BookingDeletedRequest, opts ...client.CallOption) (*BookingDeletedResult, error)
 }
 
 type userService struct {
@@ -76,17 +77,29 @@ func (c *userService) CreateUser(ctx context.Context, in *CreateUserRequest, opt
 	return out, nil
 }
 
+func (c *userService) BookingDeleted(ctx context.Context, in *BookingDeletedRequest, opts ...client.CallOption) (*BookingDeletedResult, error) {
+	req := c.c.NewRequest(c.name, "User.BookingDeleted", in)
+	out := new(BookingDeletedResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
 	DeleteUser(context.Context, *DeleteUserRequest, *DeleteUserResult) error
 	CreateUser(context.Context, *CreateUserRequest, *CreateUserResult) error
+	BookingDeleted(context.Context, *BookingDeletedRequest, *BookingDeletedResult) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
 		DeleteUser(ctx context.Context, in *DeleteUserRequest, out *DeleteUserResult) error
 		CreateUser(ctx context.Context, in *CreateUserRequest, out *CreateUserResult) error
+		BookingDeleted(ctx context.Context, in *BookingDeletedRequest, out *BookingDeletedResult) error
 	}
 	type User struct {
 		user
@@ -105,4 +118,8 @@ func (h *userHandler) DeleteUser(ctx context.Context, in *DeleteUserRequest, out
 
 func (h *userHandler) CreateUser(ctx context.Context, in *CreateUserRequest, out *CreateUserResult) error {
 	return h.UserHandler.CreateUser(ctx, in, out)
+}
+
+func (h *userHandler) BookingDeleted(ctx context.Context, in *BookingDeletedRequest, out *BookingDeletedResult) error {
+	return h.UserHandler.BookingDeleted(ctx, in, out)
 }
