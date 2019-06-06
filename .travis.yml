@@ -8,7 +8,6 @@ env:
 
 script:
     - echo run tests...
-    - echo cd tree && go test && cd ..
     - cd client && go build && cd ..
     - cd services
     - cd booking && go build && cd ..
