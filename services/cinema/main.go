@@ -13,8 +13,8 @@ import (
 )
 
 type CService struct {
-	cHall 	[]*cinema.CinemaHall
-	nextID 	int32
+	cHall  []*cinema.CinemaHall
+	nextID int32
 }
 
 func (cs *CService) CreateHall(ctx context.Context, req *cinema.CreateHallRequest, rsp *cinema.CreateHallResult) error {
@@ -53,11 +53,11 @@ func (cs *CService) AskSeats(ctx context.Context, req *cinema.FreeSeatsRequest, 
 	for _, h := range cs.cHall {
 		if h.Id == req.HallID {
 			rsp.FreeSeats = h.Cols * h.Rows
-			return nil;
+			return nil
 		}
 	}
 	rsp.FreeSeats = -1
-	return nil;
+	return nil
 }
 
 func (cs *CService) GetHallList(ctx context.Context, req *cinema.GetHallListRequest, rsp *cinema.GetHallListResult) error {

@@ -12,10 +12,10 @@ import (
 )
 
 type UService struct {
-	user 	[]*user.UserData
+	user         []*user.UserData
 	notConfirmed []*user.CreatedBookingRequest
-	bookings []*user.CreatedBookingRequest
-	nextID	int32
+	bookings     []*user.CreatedBookingRequest
+	nextID       int32
 }
 
 func (us *UService) CreateUser(ctx context.Context, req *user.CreateUserRequest, rsp *user.CreateUserResult) error {
@@ -45,26 +45,26 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 		for i, v := range us.user {
 			if v.Id == req.Id {
 				us.user = append(us.user[:i], us.user[i+1:]...)
-				return nil;
+				return nil
 			}
 		}
 	}
 	return nil
 }
 
-func (us *UService) BookingDeleted (ctx context.Context, req *user.BookingDeletedRequest, rsp *user.BookingDeletedResult) error {
+func (us *UService) BookingDeleted(ctx context.Context, req *user.BookingDeletedRequest, rsp *user.BookingDeletedResult) error {
 	if !us.deleteBooking(req.UserID, req.BookingID) {
 		us.deleteNotConfirmed(req.UserID, req.BookingID)
 	}
 	return nil
 }
 
-func (us *UService) CreatedMarkedBooking(ctx context.Context,req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
+func (us *UService) CreatedMarkedBooking(ctx context.Context, req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
 	us.notConfirmed = append(us.notConfirmed, req)
 	return nil
 }
 
-func (us *UService) CreatedBooking(ctx context.Context,req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
+func (us *UService) CreatedBooking(ctx context.Context, req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
 	us.bookings = append(us.bookings, req)
 	us.deleteNotConfirmed(req.UserID, req.BookingID)
 	return nil

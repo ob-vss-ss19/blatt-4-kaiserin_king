@@ -13,8 +13,8 @@ import (
 )
 
 type SService struct {
-	show 	[]*show.ShowData
-	nextID	int32
+	show   []*show.ShowData
+	nextID int32
 }
 
 func (shs *SService) CreateShow(ctx context.Context, req *show.CreateShowRequest, rsp *show.CreateShowResult) error {
@@ -89,7 +89,7 @@ func (shs *SService) UpdateSeats(ctx context.Context, req *show.UpdateSeatsReque
 	for _, s := range shs.show {
 		if s.Id == req.ShowID {
 			s.FreeSeats = s.FreeSeats - req.AmountSeats
-			rsp.Success = true;
+			rsp.Success = true
 			return nil
 		}
 	}
@@ -121,4 +121,3 @@ func main() {
 		log.Fatalf("Running service failed! %v\n", r.Error())
 	}
 }
-

@@ -1,20 +1,19 @@
 package main
 
-
 import (
+	"context"
 	"fmt"
 	"github.com/micro/go-micro/client"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 	"log"
-	"context"
 
 	"github.com/micro/go-micro"
 	movie "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/proto"
 )
 
 type MService struct {
-	movie 	[]*movie.MovieData
-	nextID	int32
+	movie  []*movie.MovieData
+	nextID int32
 }
 
 func (ms *MService) CreateMovie(ctx context.Context, req *movie.CreateMovieRequest, rsp *movie.CreateMovieResult) error {
@@ -38,7 +37,7 @@ func (ms *MService) DeleteMovie(ctx context.Context, req *movie.DeleteMovieReque
 	//delete Movie from MovieService
 	for i, v := range ms.movie {
 		if v.Id == req.Id {
-			ms.movie = append(ms.movie[:i], ms.movie[i + 1:]...)
+			ms.movie = append(ms.movie[:i], ms.movie[i+1:]...)
 			rsp.Successful = true
 			return nil
 		}
@@ -59,4 +58,3 @@ func main() {
 		log.Fatalf("Running service failed! %v\n", r.Error())
 	}
 }
-

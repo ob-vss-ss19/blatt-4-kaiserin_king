@@ -14,9 +14,9 @@ import (
 )
 
 type BService struct {
-	booking 	[]*booking.BookingData
+	booking      []*booking.BookingData
 	notConfirmed []*booking.BookingData
-	nextID	int32
+	nextID       int32
 }
 
 func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookingRequest, rsp *booking.CreateBookingResult) error {
@@ -168,8 +168,6 @@ func (bs *BService) sendUserBooking(userID int32, bookingID int32, confirmed boo
 	var client client.Client
 	userC := user.NewUserService("go.micro.services.user", client)
 
-
-
 	err := errors.New("nil")
 	err = nil
 
@@ -198,4 +196,3 @@ func main() {
 		log.Fatalf("Running service failed! %v\n", r.Error())
 	}
 }
-
