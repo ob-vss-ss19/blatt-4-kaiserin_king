@@ -1,12 +1,12 @@
 package main
 
-
 import (
+	"context"
 	"fmt"
 	"github.com/micro/go-micro/client"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
+	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
 	"log"
-	"context"
 
 	"github.com/micro/go-micro"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
@@ -20,7 +20,17 @@ type SService struct {
 func (shs *SService) CreateShow(ctx context.Context, req *show.CreateShowRequest, rsp *show.CreateShowResult) error {
 	givenID := shs.nextID
 	shs.nextID++
-	shs.show = append(shs.show, &show.ShowData{HallID: req.HallID, MovieID: req.MovieID, Id: givenID})
+
+	var client client.Client
+	cinemaC := cinema.NewCinemaService("go.micro.services.cinema", client)
+
+	resSeats, err := cinemaC.AskSeats(context.TODO(), &cinema.FreeSeatsRequest{HallID: req.HallID})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	shs.show = append(shs.show,
+		&show.ShowData{HallID: req.HallID, MovieID: req.MovieID, Id: givenID, FreeSeats: resSeats.FreeSeats})
 	rsp.Id = givenID
 
 	return nil
@@ -61,6 +71,29 @@ func (shs *SService) FromMovieDelete(ctx context.Context, req *show.DeleteShowOf
 		}
 	}
 	rsp.Successful = success
+	return nil
+}
+
+func (shs *SService) AskSeats(ctx context.Context, req *show.FreeSeatsRequest, rsp *show.FreeSeatsResult) error {
+	for _, s := range shs.show {
+		if s.Id == req.ShowID {
+			rsp.FreeSeats = s.FreeSeats
+			return nil
+		}
+	}
+	rsp.FreeSeats = -1
+	return nil
+}
+
+func (shs *SService) UpdateSeats(ctx context.Context, req *show.UpdateSeatsRequest, rsp *show.UpdateSeatsResult) error {
+	for _, s := range shs.show {
+		if s.Id == req.ShowID {
+			s.FreeSeats = s.FreeSeats - req.AmountSeats
+			rsp.Success = true;
+			return nil
+		}
+	}
+	rsp.Success = false
 	return nil
 }
 

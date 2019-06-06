@@ -4,7 +4,6 @@ import "C"
 import (
 	"context"
 	"fmt"
-	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	"log"
 
 	"github.com/micro/go-micro"
@@ -48,6 +47,17 @@ func (cs *CService) DeleteHall(ctx context.Context, req *cinema.DeleteHallReques
 	}
 	rsp.Successful = false
 	return nil
+}
+
+func (cs *CService) AskSeats(ctx context.Context, req *cinema.FreeSeatsRequest, rsp *cinema.FreeSeatsResult) error {
+	for _, h := range cs.cHall {
+		if h.Id == req.HallID {
+			rsp.FreeSeats = h.Cols * h.Rows
+			return nil;
+		}
+	}
+	rsp.FreeSeats = -1
+	return nil;
 }
 
 func (cs *CService) GetHallList(ctx context.Context, req *cinema.GetHallListRequest, rsp *cinema.GetHallListResult) error {

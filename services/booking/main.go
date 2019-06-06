@@ -1,12 +1,12 @@
 package main
 
-
 import (
+	"context"
 	"fmt"
 	"github.com/micro/go-micro/client"
+	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 	"log"
-	"context"
 
 	"github.com/micro/go-micro"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
@@ -21,9 +21,15 @@ type BService struct {
 func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookingRequest, rsp *booking.CreateBookingResult) error {
 	givenID := bs.nextID
 	bs.nextID++
-	bs.notConfirmed = append(bs.notConfirmed, &booking.BookingData{UserID: req.UserID, ShowID: req.ShowID, Seats: req.Seats, Id: givenID})
-	rsp.Id = givenID
 
+	if bs.checkSeats(req.ShowID) >= req.Seats {
+		bs.notConfirmed = append(bs.notConfirmed,
+			&booking.BookingData{UserID: req.UserID, ShowID: req.ShowID, Seats: req.Seats, Id: givenID})
+		rsp.Id = givenID
+		return nil
+	}
+
+	rsp.Id = -1
 	return nil
 }
 
@@ -54,11 +60,17 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 	// move booking from notConfirmed to booking list
 	for i, b := range bs.notConfirmed {
 		if b.Id == req.Id {
-			bs.booking = append(bs.booking, b)
-			// aus notConfirmed loeschen
-			bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
-			rsp.Successful = true
-			return nil
+			if bs.checkSeats(b.ShowID) >= b.Seats {
+				bs.booking = append(bs.booking, b)
+				// aus notConfirmed loeschen
+				bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
+				bs.updateSeats(b.ShowID)
+				rsp.Successful = true
+				return nil
+			} else {
+				rsp.Successful = false
+				return nil
+			}
 		}
 	}
 	rsp.Successful = false
@@ -120,6 +132,28 @@ func (bs *BService) informUser(userID int32, bookingID int32) {
 	userC := user.NewUserService("go.micro.services.user", client)
 
 	_, err := userC.BookingDeleted(context.TODO(), &user.BookingDeletedRequest{UserID: userID, BookingID: bookingID})
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func (bs *BService) checkSeats(showID int32) int32 {
+	var client client.Client
+	showC := show.NewShowService("go.micro.services.show", client)
+
+	rspShow, err := showC.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID: showID})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return rspShow.FreeSeats
+}
+
+func (bs *BService) updateSeats(showID int32) {
+	var client client.Client
+	showC := show.NewShowService("go.micro.services.show", client)
+
+	rspShow, err := showC.UpdateSeats(context.TODO(), &show.UpdateSeatsRequest{ShowID: showID})
 	if err != nil {
 		fmt.Println(err)
 	}

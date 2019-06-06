@@ -6,6 +6,7 @@ service Cinema {
     rpc CreateHall(CreateHallRequest) returns (CreateHallResult);
     rpc DeleteHall(DeleteHallRequest) returns (DeleteHallResult);
     rpc GetHallList(GetHallListRequest) returns (GetHallListResult);
+    rpc AskSeats(FreeSeatsRequest) returns (FreeSeatsResult);
 }
 
 message CreateHallRequest {
@@ -28,6 +29,14 @@ message DeleteHallResult {
 
 message GetHallListRequest {
 
+}
+
+message FreeSeatsRequest {
+    int32 HallID = 1;
+}
+
+message FreeSeatsResult {
+    int32 freeSeats = 1;
 }
 
 message GetHallListResult {

@@ -37,6 +37,9 @@ type ShowService interface {
 	DeleteShow(ctx context.Context, in *DeleteShowRequest, opts ...client.CallOption) (*DeleteShowResult, error)
 	CreateShow(ctx context.Context, in *CreateShowRequest, opts ...client.CallOption) (*CreateShowResult, error)
 	FromHallDelete(ctx context.Context, in *DeleteShowOfHallRequest, opts ...client.CallOption) (*DeleteShowOfHallResult, error)
+	FromMovieDelete(ctx context.Context, in *DeleteShowOfMovieRequest, opts ...client.CallOption) (*DeleteShowOfMovieResult, error)
+	AskSeats(ctx context.Context, in *FreeSeatsRequest, opts ...client.CallOption) (*FreeSeatsResult, error)
+	UpdateSeats(ctx context.Context, in *UpdateSeatsRequest, opts ...client.CallOption) (*UpdateSeatsResult, error)
 }
 
 type showService struct {
@@ -87,12 +90,45 @@ func (c *showService) FromHallDelete(ctx context.Context, in *DeleteShowOfHallRe
 	return out, nil
 }
 
+func (c *showService) FromMovieDelete(ctx context.Context, in *DeleteShowOfMovieRequest, opts ...client.CallOption) (*DeleteShowOfMovieResult, error) {
+	req := c.c.NewRequest(c.name, "Show.FromMovieDelete", in)
+	out := new(DeleteShowOfMovieResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *showService) AskSeats(ctx context.Context, in *FreeSeatsRequest, opts ...client.CallOption) (*FreeSeatsResult, error) {
+	req := c.c.NewRequest(c.name, "Show.AskSeats", in)
+	out := new(FreeSeatsResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *showService) UpdateSeats(ctx context.Context, in *UpdateSeatsRequest, opts ...client.CallOption) (*UpdateSeatsResult, error) {
+	req := c.c.NewRequest(c.name, "Show.UpdateSeats", in)
+	out := new(UpdateSeatsResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Show service
 
 type ShowHandler interface {
 	DeleteShow(context.Context, *DeleteShowRequest, *DeleteShowResult) error
 	CreateShow(context.Context, *CreateShowRequest, *CreateShowResult) error
 	FromHallDelete(context.Context, *DeleteShowOfHallRequest, *DeleteShowOfHallResult) error
+	FromMovieDelete(context.Context, *DeleteShowOfMovieRequest, *DeleteShowOfMovieResult) error
+	AskSeats(context.Context, *FreeSeatsRequest, *FreeSeatsResult) error
+	UpdateSeats(context.Context, *UpdateSeatsRequest, *UpdateSeatsResult) error
 }
 
 func RegisterShowHandler(s server.Server, hdlr ShowHandler, opts ...server.HandlerOption) error {
@@ -100,6 +136,9 @@ func RegisterShowHandler(s server.Server, hdlr ShowHandler, opts ...server.Handl
 		DeleteShow(ctx context.Context, in *DeleteShowRequest, out *DeleteShowResult) error
 		CreateShow(ctx context.Context, in *CreateShowRequest, out *CreateShowResult) error
 		FromHallDelete(ctx context.Context, in *DeleteShowOfHallRequest, out *DeleteShowOfHallResult) error
+		FromMovieDelete(ctx context.Context, in *DeleteShowOfMovieRequest, out *DeleteShowOfMovieResult) error
+		AskSeats(ctx context.Context, in *FreeSeatsRequest, out *FreeSeatsResult) error
+		UpdateSeats(ctx context.Context, in *UpdateSeatsRequest, out *UpdateSeatsResult) error
 	}
 	type Show struct {
 		show
@@ -122,4 +161,16 @@ func (h *showHandler) CreateShow(ctx context.Context, in *CreateShowRequest, out
 
 func (h *showHandler) FromHallDelete(ctx context.Context, in *DeleteShowOfHallRequest, out *DeleteShowOfHallResult) error {
 	return h.ShowHandler.FromHallDelete(ctx, in, out)
+}
+
+func (h *showHandler) FromMovieDelete(ctx context.Context, in *DeleteShowOfMovieRequest, out *DeleteShowOfMovieResult) error {
+	return h.ShowHandler.FromMovieDelete(ctx, in, out)
+}
+
+func (h *showHandler) AskSeats(ctx context.Context, in *FreeSeatsRequest, out *FreeSeatsResult) error {
+	return h.ShowHandler.AskSeats(ctx, in, out)
+}
+
+func (h *showHandler) UpdateSeats(ctx context.Context, in *UpdateSeatsRequest, out *UpdateSeatsResult) error {
+	return h.ShowHandler.UpdateSeats(ctx, in, out)
 }
