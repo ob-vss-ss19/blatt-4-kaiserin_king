@@ -37,6 +37,8 @@ type UserService interface {
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...client.CallOption) (*DeleteUserResult, error)
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...client.CallOption) (*CreateUserResult, error)
 	BookingDeleted(ctx context.Context, in *BookingDeletedRequest, opts ...client.CallOption) (*BookingDeletedResult, error)
+	CreatedMarkedBooking(ctx context.Context, in *CreatedBookingRequest, opts ...client.CallOption) (*CreatedBookingResult, error)
+	CreatedBooking(ctx context.Context, in *CreatedBookingRequest, opts ...client.CallOption) (*CreatedBookingResult, error)
 }
 
 type userService struct {
@@ -87,12 +89,34 @@ func (c *userService) BookingDeleted(ctx context.Context, in *BookingDeletedRequ
 	return out, nil
 }
 
+func (c *userService) CreatedMarkedBooking(ctx context.Context, in *CreatedBookingRequest, opts ...client.CallOption) (*CreatedBookingResult, error) {
+	req := c.c.NewRequest(c.name, "User.CreatedMarkedBooking", in)
+	out := new(CreatedBookingResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) CreatedBooking(ctx context.Context, in *CreatedBookingRequest, opts ...client.CallOption) (*CreatedBookingResult, error) {
+	req := c.c.NewRequest(c.name, "User.CreatedBooking", in)
+	out := new(CreatedBookingResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
 	DeleteUser(context.Context, *DeleteUserRequest, *DeleteUserResult) error
 	CreateUser(context.Context, *CreateUserRequest, *CreateUserResult) error
 	BookingDeleted(context.Context, *BookingDeletedRequest, *BookingDeletedResult) error
+	CreatedMarkedBooking(context.Context, *CreatedBookingRequest, *CreatedBookingResult) error
+	CreatedBooking(context.Context, *CreatedBookingRequest, *CreatedBookingResult) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
@@ -100,6 +124,8 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 		DeleteUser(ctx context.Context, in *DeleteUserRequest, out *DeleteUserResult) error
 		CreateUser(ctx context.Context, in *CreateUserRequest, out *CreateUserResult) error
 		BookingDeleted(ctx context.Context, in *BookingDeletedRequest, out *BookingDeletedResult) error
+		CreatedMarkedBooking(ctx context.Context, in *CreatedBookingRequest, out *CreatedBookingResult) error
+		CreatedBooking(ctx context.Context, in *CreatedBookingRequest, out *CreatedBookingResult) error
 	}
 	type User struct {
 		user
@@ -122,4 +148,12 @@ func (h *userHandler) CreateUser(ctx context.Context, in *CreateUserRequest, out
 
 func (h *userHandler) BookingDeleted(ctx context.Context, in *BookingDeletedRequest, out *BookingDeletedResult) error {
 	return h.UserHandler.BookingDeleted(ctx, in, out)
+}
+
+func (h *userHandler) CreatedMarkedBooking(ctx context.Context, in *CreatedBookingRequest, out *CreatedBookingResult) error {
+	return h.UserHandler.CreatedMarkedBooking(ctx, in, out)
+}
+
+func (h *userHandler) CreatedBooking(ctx context.Context, in *CreatedBookingRequest, out *CreatedBookingResult) error {
+	return h.UserHandler.CreatedBooking(ctx, in, out)
 }

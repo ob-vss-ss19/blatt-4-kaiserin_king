@@ -6,6 +6,8 @@ service User {
     rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResult) {}
     rpc CreateUser(CreateUserRequest) returns (CreateUserResult) {}
     rpc BookingDeleted(BookingDeletedRequest) returns (BookingDeletedResult) {}
+    rpc CreatedMarkedBooking(CreatedBookingRequest) returns (CreatedBookingResult) {}
+    rpc CreatedBooking(CreatedBookingRequest) returns (CreatedBookingResult) {}
 }
 
 message DeleteUserRequest {
@@ -30,6 +32,15 @@ message BookingDeletedRequest {
 }
 
 message BookingDeletedResult {
+}
+
+message CreatedBookingRequest {
+    int32 userID = 1;
+    int32 bookingID = 2;
+}
+
+message CreatedBookingResult {
+
 }
 
 message UserData {

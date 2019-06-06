@@ -13,6 +13,8 @@ import (
 
 type UService struct {
 	user 	[]*user.UserData
+	notConfirmed []*user.CreatedBookingRequest
+	bookings []*user.CreatedBookingRequest
 	nextID	int32
 }
 
@@ -51,7 +53,42 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 }
 
 func (us *UService) BookingDeleted (ctx context.Context, req *user.BookingDeletedRequest, rsp *user.BookingDeletedResult) error {
+	if !us.deleteBooking(req.UserID, req.BookingID) {
+		us.deleteNotConfirmed(req.UserID, req.BookingID)
+	}
 	return nil
+}
+
+func (us *UService) CreatedMarkedBooking(ctx context.Context,req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
+	us.notConfirmed = append(us.notConfirmed, req)
+	return nil
+}
+
+func (us *UService) CreatedBooking(ctx context.Context,req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
+	us.bookings = append(us.bookings, req)
+	us.deleteNotConfirmed(req.UserID, req.BookingID)
+	return nil
+}
+
+func (us *UService) deleteNotConfirmed(userID int32, bookingID int32) bool {
+	for i, b := range us.notConfirmed {
+		if b.UserID == userID && b.BookingID == bookingID {
+			us.notConfirmed = append(us.notConfirmed[:i], us.notConfirmed[i+1:]...)
+			return true
+		}
+	}
+	return false
+}
+
+func (us *UService) deleteBooking(userID int32, bookingID int32) bool {
+	for i, b := range us.bookings {
+		if b.UserID == userID && b.BookingID == bookingID {
+			us.bookings = append(us.bookings[:i], us.bookings[i+1:]...)
+			return true
+		}
+	}
+	return false
+
 }
 
 func main() {
