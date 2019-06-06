@@ -51,6 +51,19 @@ func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfH
 	return nil
 }
 
+func (shs *SService) FromMovieDelete(ctx context.Context, req *show.DeleteShowOfMovieRequest, rsp *show.DeleteShowOfMovieResult) error {
+	success := false
+	//Got the Id of an Hall which no longer exists
+	for i, v := range shs.show {
+		if v.MovieID == req.MovieID {
+			shs.delete(i, v.Id)
+			success = true
+		}
+	}
+	rsp.Successful = success
+	return nil
+}
+
 func (shs *SService) delete(index int, showID int32) {
 	shs.show = append(shs.show[:index], shs.show[index+1:]...)
 

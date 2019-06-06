@@ -6,6 +6,7 @@ service Show {
     rpc DeleteShow(DeleteShowRequest) returns (DeleteShowResult) {}
     rpc CreateShow(CreateShowRequest) returns (CreateShowResult) {}
     rpc FromHallDelete(DeleteShowOfHallRequest) returns (DeleteShowOfHallResult) {}
+    rpc FromMovieDelete(DeleteShowOfMovieRequest) returns (DeleteShowOfMovieResult) {}
 }
 
 message DeleteShowRequest {
@@ -26,6 +27,14 @@ message DeleteShowOfHallRequest {
 }
 
 message DeleteShowOfHallResult {
+    bool successful = 1;
+}
+
+message DeleteShowOfMovieRequest {
+    int32 movieID = 1;
+}
+
+message DeleteShowOfMovieResult {
     bool successful = 1;
 }
 

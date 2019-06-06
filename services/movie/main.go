@@ -2,6 +2,9 @@ package main
 
 
 import (
+	"fmt"
+	"github.com/micro/go-micro/client"
+	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 	"log"
 	"context"
 
@@ -25,6 +28,22 @@ func (ms *MService) CreateMovie(ctx context.Context, req *movie.CreateMovieReque
 
 func (ms *MService) DeleteMovie(ctx context.Context, req *movie.DeleteMovieRequest, rsp *movie.DeleteMovieResult) error {
 	// check if movie is used for bookings or shows
+	var client client.Client
+	showC := show.NewShowService("go.micro.services.show", client)
+
+	_, err := showC.FromMovieDelete(context.TODO(), &show.DeleteShowOfMovieRequest{MovieID: req.Id})
+	if err != nil {
+		fmt.Println(err)
+	}
+	//delete Movie from MovieService
+	for i, v := range ms.movie {
+		if v.Id == req.Id {
+			ms.movie = append(ms.movie[:i], ms.movie[i + 1:]...)
+			rsp.Successful = true
+			return nil
+		}
+	}
+	rsp.Successful = false
 	return nil
 }
 
