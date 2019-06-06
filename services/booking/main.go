@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/micro/go-micro/client"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
@@ -26,6 +27,9 @@ func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookin
 		bs.notConfirmed = append(bs.notConfirmed,
 			&booking.BookingData{UserID: req.UserID, ShowID: req.ShowID, Seats: req.Seats, Id: givenID})
 		rsp.Id = givenID
+
+		bs.sendUserBooking(givenID, req.UserID, false)
+
 		return nil
 	}
 
@@ -66,6 +70,7 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 				bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
 				bs.updateSeats(b.ShowID)
 				rsp.Successful = true
+				bs.sendUserBooking(b.UserID, b.UserID, true)
 				return nil
 			} else {
 				rsp.Successful = false
@@ -153,7 +158,29 @@ func (bs *BService) updateSeats(showID int32) {
 	var client client.Client
 	showC := show.NewShowService("go.micro.services.show", client)
 
-	rspShow, err := showC.UpdateSeats(context.TODO(), &show.UpdateSeatsRequest{ShowID: showID})
+	_, err := showC.UpdateSeats(context.TODO(), &show.UpdateSeatsRequest{ShowID: showID})
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func (bs *BService) sendUserBooking(userID int32, bookingID int32, confirmed bool) {
+	var client client.Client
+	userC := user.NewUserService("go.micro.services.user", client)
+
+
+
+	err := errors.New("nil")
+	err = nil
+
+	if confirmed {
+		_, err = userC.CreatedBooking(context.TODO(),
+			&user.CreatedBookingRequest{UserID: userID, BookingID: bookingID})
+	} else {
+		_, err = userC.CreatedMarkedBooking(context.TODO(),
+			&user.CreatedBookingRequest{UserID: userID, BookingID: bookingID})
+	}
+
 	if err != nil {
 		fmt.Println(err)
 	}
