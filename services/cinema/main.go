@@ -71,9 +71,16 @@ func main() {
 	)
 
 	service.Init()
-	cinema.RegisterCinemaHandler(service.Server(), &CService{cHall: make([]*cinema.CinemaHall, 0), nextID: 0})
+	cinema.RegisterCinemaHandler(service.Server(), &CService{cHall: exampleData(), nextID: 2})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
 	}
+}
+
+func exampleData() []*cinema.CinemaHall {
+	halls := make([]*cinema.CinemaHall, 0)
+	halls = append(halls, &cinema.CinemaHall{Id: 0, Name: "Kino 9", Rows: 5, Cols: 7})
+	halls = append(halls, &cinema.CinemaHall{Id: 1, Name: "Kino 11", Rows: 18, Cols: 26})
+	return halls
 }

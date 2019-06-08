@@ -9,8 +9,8 @@ import (
 )
 
 type UService struct {
-	user         []*user.UserData
-	nextID       int32
+	user   []*user.UserData
+	nextID int32
 }
 
 func (us *UService) CreateUser(ctx context.Context, req *user.CreateUserRequest, rsp *user.CreateUserResult) error {
@@ -44,7 +44,7 @@ func (us *UService) BookingDeleted(ctx context.Context, req *user.BookingDeleted
 }
 
 func (us *UService) CreatedMarkedBooking(ctx context.Context, req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
-	for _,u := range us.user {
+	for _, u := range us.user {
 		if req.UserID == u.Id {
 			u.NotConfirmed = append(u.NotConfirmed, req.BookingID)
 		}
@@ -53,7 +53,7 @@ func (us *UService) CreatedMarkedBooking(ctx context.Context, req *user.CreatedB
 }
 
 func (us *UService) CreatedBooking(ctx context.Context, req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
-	for _,u := range us.user {
+	for _, u := range us.user {
 		if u.Id == req.UserID {
 			u.Bookings = append(u.Bookings, req.BookingID)
 			us.deleteNotConfirmed(req.UserID, req.BookingID)
@@ -71,7 +71,7 @@ func (us *UService) GetUserList(ctx context.Context, req *user.GetUserListReques
 func (us *UService) deleteNotConfirmed(userID int32, bookingID int32) bool {
 	for _, u := range us.user {
 		if u.Id == userID {
-			for i,b := range u.NotConfirmed {
+			for i, b := range u.NotConfirmed {
 				if b == bookingID {
 					u.NotConfirmed = append(u.NotConfirmed[:i], u.NotConfirmed[i+1:]...)
 					return true
@@ -85,7 +85,7 @@ func (us *UService) deleteNotConfirmed(userID int32, bookingID int32) bool {
 func (us *UService) deleteBooking(userID int32, bookingID int32) bool {
 	for _, u := range us.user {
 		if u.Id == userID {
-			for i,b := range u.Bookings {
+			for i, b := range u.Bookings {
 				if b == bookingID {
 					u.Bookings = append(u.Bookings[:i], u.Bookings[i+1:]...)
 					return true
@@ -119,9 +119,22 @@ func main() {
 	)
 
 	service.Init()
-	user.RegisterUserHandler(service.Server(), &UService{user: make([]*user.UserData, 0), nextID: 0})
+	user.RegisterUserHandler(service.Server(), &UService{user: exampleData(), nextID: 4})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
 	}
+}
+
+func exampleData() []*user.UserData {
+	users := make([]*user.UserData, 0)
+	users = append(users, &user.UserData{Id: 0, Name: "Maxi Kings",
+		Bookings: make([]int32, 0), NotConfirmed: make([]int32, 0)})
+	users = append(users, &user.UserData{Id: 1, Name: "Kasierin Sissy",
+		Bookings: make([]int32, 0), NotConfirmed: make([]int32, 0)})
+	users = append(users, &user.UserData{Id: 2, Name: "Simon der Weise",
+		Bookings: make([]int32, 0), NotConfirmed: make([]int32, 0)})
+	users = append(users, &user.UserData{Id: 3, Name: "Lisa Master",
+		Bookings: make([]int32, 0), NotConfirmed: make([]int32, 0)})
+	return users
 }

@@ -57,9 +57,18 @@ func main() {
 	)
 
 	service.Init()
-	movie.RegisterMovieHandler(service.Server(), &MService{movie: make([]*movie.MovieData, 0), nextID: 0})
+	movie.RegisterMovieHandler(service.Server(), &MService{movie: exampleData(), nextID: 4})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
 	}
+}
+
+func exampleData() []*movie.MovieData {
+	movies := make([]*movie.MovieData, 0)
+	movies = append(movies, &movie.MovieData{Id: 0, Titel: "Deadpool"})
+	movies = append(movies, &movie.MovieData{Id: 1, Titel: "Deadpool 2"})
+	movies = append(movies, &movie.MovieData{Id: 2, Titel: "Avengers 4"})
+	movies = append(movies, &movie.MovieData{Id: 3, Titel: "Ted"})
+	return movies
 }

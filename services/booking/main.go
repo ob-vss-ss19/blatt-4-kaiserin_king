@@ -82,23 +82,23 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 	return nil
 }
 
-/*func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookingOfUserRequest, rsp *booking.AskBookingOfUserResult) error {
+func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookingOfUserRequest, rsp *booking.AskBookingOfUserResult) error {
 	// look if there are bookings of userID
-	for _, b := range bs.booking {
-		if b.UserID == req.UserId {
-			rsp.NoBookings = false
-			return nil
+	/*	for _, b := range bs.booking {
+			if b.UserID == req.UserId {
+				rsp.NoBookings = false
+				return nil
+			}
 		}
-	}
-	for _, b := range bs.notConfirmed {
-		if b.UserID == req.UserId {
-			rsp.NoBookings = false
-			return nil
+		for _, b := range bs.notConfirmed {
+			if b.UserID == req.UserId {
+				rsp.NoBookings = false
+				return nil
+			}
 		}
-	}
-	rsp.NoBookings = true
+		rsp.NoBookings = true*/
 	return nil
-}*/
+}
 
 func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDeleteRequest, rsp *booking.FromShowDeleteResult) error {
 	success := false
@@ -127,7 +127,7 @@ func (bs *BService) GetNotConfirmedList(ctx context.Context, req *booking.GetLis
 	return nil
 }
 
-func (bs *BService) GetBookingsList(ctx context.Context, req *booking.GetListRequest, rsp *booking.GetListResult) error {
+func (bs *BService) GetBookingList(ctx context.Context, req *booking.GetListRequest, rsp *booking.GetListResult) error {
 	rsp.Bookings = bs.notConfirmed
 	return nil
 }
@@ -200,9 +200,18 @@ func main() {
 	)
 
 	service.Init()
-	booking.RegisterBookingHandler(service.Server(), &BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 0})
+	booking.RegisterBookingHandler(service.Server(), &BService{booking: exampleData(), notConfirmed: make([]*booking.BookingData, 0), nextID: 0})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
 	}
+}
+
+func exampleData() []*booking.BookingData {
+	bookings := make([]*booking.BookingData, 0)
+	bookings = append(bookings, &booking.BookingData{Id: 0, UserID: 2, ShowID: 3, Seats: 2})
+	bookings = append(bookings, &booking.BookingData{Id: 1, UserID: 3, ShowID: 2, Seats: 2})
+	bookings = append(bookings, &booking.BookingData{Id: 2, UserID: 0, ShowID: 0, Seats: 4})
+	bookings = append(bookings, &booking.BookingData{Id: 3, UserID: 1, ShowID: 2, Seats: 2})
+	return bookings
 }
