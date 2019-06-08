@@ -39,6 +39,7 @@ type UserService interface {
 	BookingDeleted(ctx context.Context, in *BookingDeletedRequest, opts ...client.CallOption) (*BookingDeletedResult, error)
 	CreatedMarkedBooking(ctx context.Context, in *CreatedBookingRequest, opts ...client.CallOption) (*CreatedBookingResult, error)
 	CreatedBooking(ctx context.Context, in *CreatedBookingRequest, opts ...client.CallOption) (*CreatedBookingResult, error)
+	GetUserList(ctx context.Context, in *GetUserListRequest, opts ...client.CallOption) (*GetUserListResult, error)
 }
 
 type userService struct {
@@ -109,6 +110,16 @@ func (c *userService) CreatedBooking(ctx context.Context, in *CreatedBookingRequ
 	return out, nil
 }
 
+func (c *userService) GetUserList(ctx context.Context, in *GetUserListRequest, opts ...client.CallOption) (*GetUserListResult, error) {
+	req := c.c.NewRequest(c.name, "User.GetUserList", in)
+	out := new(GetUserListResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
@@ -117,6 +128,7 @@ type UserHandler interface {
 	BookingDeleted(context.Context, *BookingDeletedRequest, *BookingDeletedResult) error
 	CreatedMarkedBooking(context.Context, *CreatedBookingRequest, *CreatedBookingResult) error
 	CreatedBooking(context.Context, *CreatedBookingRequest, *CreatedBookingResult) error
+	GetUserList(context.Context, *GetUserListRequest, *GetUserListResult) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
@@ -126,6 +138,7 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 		BookingDeleted(ctx context.Context, in *BookingDeletedRequest, out *BookingDeletedResult) error
 		CreatedMarkedBooking(ctx context.Context, in *CreatedBookingRequest, out *CreatedBookingResult) error
 		CreatedBooking(ctx context.Context, in *CreatedBookingRequest, out *CreatedBookingResult) error
+		GetUserList(ctx context.Context, in *GetUserListRequest, out *GetUserListResult) error
 	}
 	type User struct {
 		user
@@ -156,4 +169,8 @@ func (h *userHandler) CreatedMarkedBooking(ctx context.Context, in *CreatedBooki
 
 func (h *userHandler) CreatedBooking(ctx context.Context, in *CreatedBookingRequest, out *CreatedBookingResult) error {
 	return h.UserHandler.CreatedBooking(ctx, in, out)
+}
+
+func (h *userHandler) GetUserList(ctx context.Context, in *GetUserListRequest, out *GetUserListResult) error {
+	return h.UserHandler.GetUserList(ctx, in, out)
 }

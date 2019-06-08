@@ -122,6 +122,16 @@ func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDel
 	return nil
 }
 
+func (bs *BService) GetNotConfirmedList(ctx context.Context, req *booking.GetListRequest, rsp *booking.GetListResult) error {
+	rsp.Bookings = bs.notConfirmed
+	return nil
+}
+
+func (bs *BService) GetBookingsList(ctx context.Context, req *booking.GetListRequest, rsp *booking.GetListResult) error {
+	rsp.Bookings = bs.notConfirmed
+	return nil
+}
+
 func (bs *BService) deleteFromNotConfirmed(index int, userID int32, bookingID int32) {
 	bs.notConfirmed = append(bs.notConfirmed[:index], bs.notConfirmed[index+1:]...)
 	bs.informUser(userID, bookingID)

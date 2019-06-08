@@ -39,6 +39,8 @@ type BookingService interface {
 	ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, opts ...client.CallOption) (*ConfirmBookingResult, error)
 	AskBookingOfUser(ctx context.Context, in *AskBookingOfUserRequest, opts ...client.CallOption) (*AskBookingOfUserResult, error)
 	FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, opts ...client.CallOption) (*FromShowDeleteResult, error)
+	GetBookingList(ctx context.Context, in *GetListRequest, opts ...client.CallOption) (*GetListResult, error)
+	GetNotConfirmedList(ctx context.Context, in *GetListRequest, opts ...client.CallOption) (*GetListResult, error)
 }
 
 type bookingService struct {
@@ -109,6 +111,26 @@ func (c *bookingService) FromShowDelete(ctx context.Context, in *FromShowDeleteR
 	return out, nil
 }
 
+func (c *bookingService) GetBookingList(ctx context.Context, in *GetListRequest, opts ...client.CallOption) (*GetListResult, error) {
+	req := c.c.NewRequest(c.name, "Booking.GetBookingList", in)
+	out := new(GetListResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bookingService) GetNotConfirmedList(ctx context.Context, in *GetListRequest, opts ...client.CallOption) (*GetListResult, error) {
+	req := c.c.NewRequest(c.name, "Booking.GetNotConfirmedList", in)
+	out := new(GetListResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Booking service
 
 type BookingHandler interface {
@@ -117,6 +139,8 @@ type BookingHandler interface {
 	ConfirmBooking(context.Context, *ConfirmBookingRequest, *ConfirmBookingResult) error
 	AskBookingOfUser(context.Context, *AskBookingOfUserRequest, *AskBookingOfUserResult) error
 	FromShowDelete(context.Context, *FromShowDeleteRequest, *FromShowDeleteResult) error
+	GetBookingList(context.Context, *GetListRequest, *GetListResult) error
+	GetNotConfirmedList(context.Context, *GetListRequest, *GetListResult) error
 }
 
 func RegisterBookingHandler(s server.Server, hdlr BookingHandler, opts ...server.HandlerOption) error {
@@ -126,6 +150,8 @@ func RegisterBookingHandler(s server.Server, hdlr BookingHandler, opts ...server
 		ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, out *ConfirmBookingResult) error
 		AskBookingOfUser(ctx context.Context, in *AskBookingOfUserRequest, out *AskBookingOfUserResult) error
 		FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, out *FromShowDeleteResult) error
+		GetBookingList(ctx context.Context, in *GetListRequest, out *GetListResult) error
+		GetNotConfirmedList(ctx context.Context, in *GetListRequest, out *GetListResult) error
 	}
 	type Booking struct {
 		booking
@@ -156,4 +182,12 @@ func (h *bookingHandler) AskBookingOfUser(ctx context.Context, in *AskBookingOfU
 
 func (h *bookingHandler) FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, out *FromShowDeleteResult) error {
 	return h.BookingHandler.FromShowDelete(ctx, in, out)
+}
+
+func (h *bookingHandler) GetBookingList(ctx context.Context, in *GetListRequest, out *GetListResult) error {
+	return h.BookingHandler.GetBookingList(ctx, in, out)
+}
+
+func (h *bookingHandler) GetNotConfirmedList(ctx context.Context, in *GetListRequest, out *GetListResult) error {
+	return h.BookingHandler.GetNotConfirmedList(ctx, in, out)
 }

@@ -3,10 +3,10 @@ syntax = "proto3";
 package cinema;
 
 service Cinema {
-    rpc CreateHall(CreateHallRequest) returns (CreateHallResult);
-    rpc DeleteHall(DeleteHallRequest) returns (DeleteHallResult);
-    rpc GetHallList(GetHallListRequest) returns (GetHallListResult);
-    rpc AskSeats(FreeSeatsRequest) returns (FreeSeatsResult);
+    rpc CreateHall(CreateHallRequest) returns (CreateHallResult) {}
+    rpc DeleteHall(DeleteHallRequest) returns (DeleteHallResult) {}
+    rpc GetHallList(GetHallListRequest) returns (GetHallListResult) {}
+    rpc AskSeats(FreeSeatsRequest) returns (FreeSeatsResult) {}
 }
 
 message CreateHallRequest {

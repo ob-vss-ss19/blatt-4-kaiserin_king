@@ -8,6 +8,8 @@ service Booking {
     rpc ConfirmBooking(ConfirmBookingRequest) returns (ConfirmBookingResult) {}
     rpc AskBookingOfUser(AskBookingOfUserRequest) returns (AskBookingOfUserResult) {}
     rpc FromShowDelete(FromShowDeleteRequest) returns (FromShowDeleteResult) {}
+    rpc GetBookingList(GetListRequest) returns (GetListResult) {}
+    rpc GetNotConfirmedList(GetListRequest) returns (GetListResult) {}
 }
 
 message DeleteBookingRequest {
@@ -50,6 +52,12 @@ message FromShowDeleteRequest {
 
 message FromShowDeleteResult {
     bool successful = 1;
+}
+
+message GetListRequest {}
+
+message GetListResult {
+    repeated BookingData bookings = 1;
 }
 
 message BookingData {

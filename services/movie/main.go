@@ -46,6 +46,11 @@ func (ms *MService) DeleteMovie(ctx context.Context, req *movie.DeleteMovieReque
 	return nil
 }
 
+func (ms *MService) GetMovieList(ctx context.Context, req *movie.GetMovieListRequest, rsp *movie.GetMovieListResult) error {
+	rsp.Movies = ms.movie
+	return nil
+}
+
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.movie"),

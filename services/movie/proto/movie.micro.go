@@ -36,6 +36,7 @@ var _ server.Option
 type MovieService interface {
 	DeleteMovie(ctx context.Context, in *DeleteMovieRequest, opts ...client.CallOption) (*DeleteMovieResult, error)
 	CreateMovie(ctx context.Context, in *CreateMovieRequest, opts ...client.CallOption) (*CreateMovieResult, error)
+	GetMovieList(ctx context.Context, in *GetMovieListRequest, opts ...client.CallOption) (*GetMovieListResult, error)
 }
 
 type movieService struct {
@@ -76,17 +77,29 @@ func (c *movieService) CreateMovie(ctx context.Context, in *CreateMovieRequest, 
 	return out, nil
 }
 
+func (c *movieService) GetMovieList(ctx context.Context, in *GetMovieListRequest, opts ...client.CallOption) (*GetMovieListResult, error) {
+	req := c.c.NewRequest(c.name, "Movie.GetMovieList", in)
+	out := new(GetMovieListResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Movie service
 
 type MovieHandler interface {
 	DeleteMovie(context.Context, *DeleteMovieRequest, *DeleteMovieResult) error
 	CreateMovie(context.Context, *CreateMovieRequest, *CreateMovieResult) error
+	GetMovieList(context.Context, *GetMovieListRequest, *GetMovieListResult) error
 }
 
 func RegisterMovieHandler(s server.Server, hdlr MovieHandler, opts ...server.HandlerOption) error {
 	type movie interface {
 		DeleteMovie(ctx context.Context, in *DeleteMovieRequest, out *DeleteMovieResult) error
 		CreateMovie(ctx context.Context, in *CreateMovieRequest, out *CreateMovieResult) error
+		GetMovieList(ctx context.Context, in *GetMovieListRequest, out *GetMovieListResult) error
 	}
 	type Movie struct {
 		movie
@@ -105,4 +118,8 @@ func (h *movieHandler) DeleteMovie(ctx context.Context, in *DeleteMovieRequest, 
 
 func (h *movieHandler) CreateMovie(ctx context.Context, in *CreateMovieRequest, out *CreateMovieResult) error {
 	return h.MovieHandler.CreateMovie(ctx, in, out)
+}
+
+func (h *movieHandler) GetMovieList(ctx context.Context, in *GetMovieListRequest, out *GetMovieListResult) error {
+	return h.MovieHandler.GetMovieList(ctx, in, out)
 }

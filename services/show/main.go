@@ -97,6 +97,11 @@ func (shs *SService) UpdateSeats(ctx context.Context, req *show.UpdateSeatsReque
 	return nil
 }
 
+func (shs *SService) GetShowList(ctx context.Context, req *show.GetShowListRequest, rsp *show.GetShowListResult) error {
+	rsp.Shows = shs.show
+	return nil
+}
+
 func (shs *SService) delete(index int, showID int32) {
 	shs.show = append(shs.show[:index], shs.show[index+1:]...)
 

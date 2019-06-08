@@ -67,6 +67,11 @@ func (us *UService) CreatedBooking(ctx context.Context, req *user.CreatedBooking
 	return nil
 }
 
+func (us *UService) GetUserList(ctx context.Context, req *user.GetUserListRequest, rsp *user.GetUserListResult) error {
+	rsp.Users = us.user
+	return nil
+}
+
 func (us *UService) deleteNotConfirmed(userID int32, bookingID int32) bool {
 	for i, b := range us.notConfirmed {
 		if b.UserID == userID && b.BookingID == bookingID {

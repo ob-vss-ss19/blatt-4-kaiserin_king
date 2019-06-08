@@ -7,8 +7,9 @@ service Show {
     rpc CreateShow(CreateShowRequest) returns (CreateShowResult) {}
     rpc FromHallDelete(DeleteShowOfHallRequest) returns (DeleteShowOfHallResult) {}
     rpc FromMovieDelete(DeleteShowOfMovieRequest) returns (DeleteShowOfMovieResult) {}
-    rpc AskSeats(FreeSeatsRequest) returns (FreeSeatsResult);
-    rpc UpdateSeats(UpdateSeatsRequest) returns (UpdateSeatsResult);
+    rpc AskSeats(FreeSeatsRequest) returns (FreeSeatsResult) {}
+    rpc UpdateSeats(UpdateSeatsRequest) returns (UpdateSeatsResult) {}
+    rpc GetShowList(GetShowListRequest) returns (GetShowListResult) {}
 }
 
 message DeleteShowRequest {
@@ -59,6 +60,12 @@ message UpdateSeatsRequest {
 
 message UpdateSeatsResult {
     bool success = 1;
+}
+
+message GetShowListRequest {}
+
+message GetShowListResult {
+    repeated ShowData shows = 1;
 }
 
 message ShowData {

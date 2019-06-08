@@ -5,6 +5,7 @@ package movie;
 service Movie {
     rpc DeleteMovie(DeleteMovieRequest) returns (DeleteMovieResult) {}
     rpc CreateMovie(CreateMovieRequest) returns (CreateMovieResult) {}
+    rpc GetMovieList(GetMovieListRequest) returns (GetMovieListResult) {}
 }
 
 message DeleteMovieRequest {
@@ -21,6 +22,12 @@ message CreateMovieRequest {
 
 message CreateMovieResult {
     int32 id = 1;
+}
+
+message GetMovieListRequest {}
+
+message GetMovieListResult {
+    repeated MovieData movies = 1;
 }
 
 message MovieData {
