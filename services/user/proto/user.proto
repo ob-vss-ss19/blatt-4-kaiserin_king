@@ -51,4 +51,6 @@ message GetUserListResult {
 message UserData {
     int32 id = 1;
     string name = 2;
+    repeated int32 bookings = 3;
+    repeated int32 notConfirmed = 4;
 }

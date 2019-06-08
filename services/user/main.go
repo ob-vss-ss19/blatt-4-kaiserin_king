@@ -10,8 +10,6 @@ import (
 
 type UService struct {
 	user         []*user.UserData
-	notConfirmed []*user.CreatedBookingRequest
-	bookings     []*user.CreatedBookingRequest
 	nextID       int32
 }
 
@@ -26,17 +24,6 @@ func (us *UService) CreateUser(ctx context.Context, req *user.CreateUserRequest,
 
 func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest, rsp *user.DeleteUserResult) error {
 	// delete only if no bookings
-
-/*	var client client.Client
-	userC := booking.NewBookingService("go.micro.services.booking", client)
-
-	bookingRsp, err := userC.AskBookingOfUser(context.TODO(), &booking.AskBookingOfUserRequest{UserId: req.Id})
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(bookingRsp.NoBookings)*/
-
 	if us.CheckBookingOfUser(req.Id) {
 		// kann geloescht werden, da keine Reservierungen vorhanden für aktuellen user
 		for i, v := range us.user {
@@ -57,13 +44,22 @@ func (us *UService) BookingDeleted(ctx context.Context, req *user.BookingDeleted
 }
 
 func (us *UService) CreatedMarkedBooking(ctx context.Context, req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
-	us.notConfirmed = append(us.notConfirmed, req)
+	for _,u := range us.user {
+		if req.UserID == u.Id {
+			u.NotConfirmed = append(u.NotConfirmed, req.BookingID)
+		}
+	}
 	return nil
 }
 
 func (us *UService) CreatedBooking(ctx context.Context, req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
-	us.bookings = append(us.bookings, req)
-	us.deleteNotConfirmed(req.UserID, req.BookingID)
+	for _,u := range us.user {
+		if u.Id == req.UserID {
+			u.Bookings = append(u.Bookings, req.BookingID)
+			us.deleteNotConfirmed(req.UserID, req.BookingID)
+			return nil
+		}
+	}
 	return nil
 }
 
@@ -73,36 +69,45 @@ func (us *UService) GetUserList(ctx context.Context, req *user.GetUserListReques
 }
 
 func (us *UService) deleteNotConfirmed(userID int32, bookingID int32) bool {
-	for i, b := range us.notConfirmed {
-		if b.UserID == userID && b.BookingID == bookingID {
-			us.notConfirmed = append(us.notConfirmed[:i], us.notConfirmed[i+1:]...)
-			return true
+	for _, u := range us.user {
+		if u.Id == userID {
+			for i,b := range u.NotConfirmed {
+				if b == bookingID {
+					u.NotConfirmed = append(u.NotConfirmed[:i], u.NotConfirmed[i+1:]...)
+					return true
+				}
+			}
 		}
 	}
 	return false
 }
 
 func (us *UService) deleteBooking(userID int32, bookingID int32) bool {
-	for i, b := range us.bookings {
-		if b.UserID == userID && b.BookingID == bookingID {
-			us.bookings = append(us.bookings[:i], us.bookings[i+1:]...)
-			return true
+	for _, u := range us.user {
+		if u.Id == userID {
+			for i,b := range u.Bookings {
+				if b == bookingID {
+					u.Bookings = append(u.Bookings[:i], u.Bookings[i+1:]...)
+					return true
+				}
+			}
 		}
 	}
 	return false
-
 }
 
 func (us *UService) CheckBookingOfUser(userID int32) bool {
 	// look if there are bookings of userID
-	for _, b := range us.bookings {
-		if b.UserID == userID {
-			return false
+	for _, u := range us.user {
+		if u.Id == userID {
+			if len(u.Bookings) != 0 {
+				return false
+			}
 		}
-	}
-	for _, b := range us.notConfirmed {
-		if b.UserID == userID {
-			return false
+		if u.Id == userID {
+			if len(u.NotConfirmed) != 0 {
+				return false
+			}
 		}
 	}
 	return true
