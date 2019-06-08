@@ -82,7 +82,7 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 	return nil
 }
 
-func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookingOfUserRequest, rsp *booking.AskBookingOfUserResult) error {
+/*func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookingOfUserRequest, rsp *booking.AskBookingOfUserResult) error {
 	// look if there are bookings of userID
 	for _, b := range bs.booking {
 		if b.UserID == req.UserId {
@@ -98,7 +98,7 @@ func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookin
 	}
 	rsp.NoBookings = true
 	return nil
-}
+}*/
 
 func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDeleteRequest, rsp *booking.FromShowDeleteResult) error {
 	success := false

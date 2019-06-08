@@ -2,12 +2,9 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/micro/go-micro"
-	"github.com/micro/go-micro/client"
-	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 )
 
@@ -30,7 +27,7 @@ func (us *UService) CreateUser(ctx context.Context, req *user.CreateUserRequest,
 func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest, rsp *user.DeleteUserResult) error {
 	// delete only if no bookings
 
-	var client client.Client
+/*	var client client.Client
 	userC := booking.NewBookingService("go.micro.services.booking", client)
 
 	bookingRsp, err := userC.AskBookingOfUser(context.TODO(), &booking.AskBookingOfUserRequest{UserId: req.Id})
@@ -38,9 +35,9 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 		fmt.Println(err)
 	}
 
-	fmt.Println(bookingRsp.NoBookings)
+	fmt.Println(bookingRsp.NoBookings)*/
 
-	if bookingRsp.NoBookings {
+	if us.CheckBookingOfUser(req.Id) {
 		// kann geloescht werden, da keine Reservierungen vorhanden für aktuellen user
 		for i, v := range us.user {
 			if v.Id == req.Id {
@@ -89,6 +86,21 @@ func (us *UService) deleteBooking(userID int32, bookingID int32) bool {
 	}
 	return false
 
+}
+
+func (us *UService) CheckBookingOfUser(userID int32) bool {
+	// look if there are bookings of userID
+	for _, b := range us.bookings {
+		if b.UserID == userID {
+			return false
+		}
+	}
+	for _, b := range us.notConfirmed {
+		if b.UserID == userID {
+			return false
+		}
+	}
+	return true
 }
 
 func main() {
