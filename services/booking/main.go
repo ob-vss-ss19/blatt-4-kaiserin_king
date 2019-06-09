@@ -128,7 +128,7 @@ func (bs *BService) GetNotConfirmedList(ctx context.Context, req *booking.GetLis
 }
 
 func (bs *BService) GetBookingList(ctx context.Context, req *booking.GetListRequest, rsp *booking.GetListResult) error {
-	rsp.Bookings = bs.notConfirmed
+	rsp.Bookings = bs.booking
 	return nil
 }
 
@@ -200,7 +200,7 @@ func main() {
 	)
 
 	service.Init()
-	booking.RegisterBookingHandler(service.Server(), &BService{booking: exampleData(), notConfirmed: make([]*booking.BookingData, 0), nextID: 0})
+	booking.RegisterBookingHandler(service.Server(), &BService{booking: exampleData(), notConfirmed: make([]*booking.BookingData, 0), nextID: 5})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
@@ -209,9 +209,9 @@ func main() {
 
 func exampleData() []*booking.BookingData {
 	bookings := make([]*booking.BookingData, 0)
-	bookings = append(bookings, &booking.BookingData{Id: 0, UserID: 2, ShowID: 3, Seats: 2})
-	bookings = append(bookings, &booking.BookingData{Id: 1, UserID: 3, ShowID: 2, Seats: 2})
-	bookings = append(bookings, &booking.BookingData{Id: 2, UserID: 0, ShowID: 0, Seats: 4})
-	bookings = append(bookings, &booking.BookingData{Id: 3, UserID: 1, ShowID: 2, Seats: 2})
+	bookings = append(bookings, &booking.BookingData{Id: 1, UserID: 3, ShowID: 4, Seats: 2})
+	bookings = append(bookings, &booking.BookingData{Id: 2, UserID: 4, ShowID: 3, Seats: 2})
+	bookings = append(bookings, &booking.BookingData{Id: 3, UserID: 1, ShowID: 1, Seats: 4})
+	bookings = append(bookings, &booking.BookingData{Id: 4, UserID: 2, ShowID: 3, Seats: 2})
 	return bookings
 }

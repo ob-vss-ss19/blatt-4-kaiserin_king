@@ -120,7 +120,7 @@ func main() {
 	)
 
 	service.Init()
-	show.RegisterShowHandler(service.Server(), &SService{show: make([]*show.ShowData, 0), nextID: 0})
+	show.RegisterShowHandler(service.Server(), &SService{show: exampleData(), nextID: 5})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
@@ -129,9 +129,9 @@ func main() {
 
 func exampleData() []*show.ShowData {
 	shows := make([]*show.ShowData, 0)
-	shows = append(shows, &show.ShowData{Id: 0, MovieID: 0, HallID: 1, FreeSeats: 482})
-	shows = append(shows, &show.ShowData{Id: 1, MovieID: 1, HallID: 0, FreeSeats: 35})
-	shows = append(shows, &show.ShowData{Id: 2, MovieID: 2, HallID: 1, FreeSeats: 482})
-	shows = append(shows, &show.ShowData{Id: 3, MovieID: 3, HallID: 0, FreeSeats: 33})
+	shows = append(shows, &show.ShowData{Id: 1, MovieID: 1, HallID: 2, FreeSeats: 482})
+	shows = append(shows, &show.ShowData{Id: 2, MovieID: 2, HallID: 1, FreeSeats: 35})
+	shows = append(shows, &show.ShowData{Id: 3, MovieID: 3, HallID: 2, FreeSeats: 482})
+	shows = append(shows, &show.ShowData{Id: 4, MovieID: 4, HallID: 1, FreeSeats: 33})
 	return shows
 }

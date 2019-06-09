@@ -119,7 +119,7 @@ func main() {
 	)
 
 	service.Init()
-	user.RegisterUserHandler(service.Server(), &UService{user: exampleData(), nextID: 4})
+	user.RegisterUserHandler(service.Server(), &UService{user: exampleData(), nextID: 5})
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
@@ -128,13 +128,17 @@ func main() {
 
 func exampleData() []*user.UserData {
 	users := make([]*user.UserData, 0)
-	users = append(users, &user.UserData{Id: 0, Name: "Maxi Kings",
+	users = append(users, &user.UserData{Id: 1, Name: "Maxi King",
 		Bookings: make([]int32, 0), NotConfirmed: make([]int32, 0)})
-	users = append(users, &user.UserData{Id: 1, Name: "Kasierin Sissy",
+
+	users = append(users, &user.UserData{Id: 2, Name: "Kasierin Sissy",
 		Bookings: make([]int32, 0), NotConfirmed: make([]int32, 0)})
-	users = append(users, &user.UserData{Id: 2, Name: "Simon der Weise",
+
+	users = append(users, &user.UserData{Id: 3, Name: "Simon der Weise",
 		Bookings: make([]int32, 0), NotConfirmed: make([]int32, 0)})
-	users = append(users, &user.UserData{Id: 3, Name: "Lisa Master",
+
+	users = append(users, &user.UserData{Id: 4, Name: "Lisa Master",
 		Bookings: make([]int32, 0), NotConfirmed: make([]int32, 0)})
+
 	return users
 }
