@@ -28,7 +28,7 @@ func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookin
 			&booking.BookingData{UserID: req.UserID, ShowID: req.ShowID, Seats: req.Seats, Id: givenID})
 		rsp.Id = givenID
 
-		bs.sendUserBooking(givenID, req.UserID, false)
+		bs.sendUserBooking(req.UserID, givenID,false)
 
 		return nil
 	}
@@ -70,7 +70,7 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 				bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
 				bs.updateSeats(b.ShowID)
 				rsp.Successful = true
-				bs.sendUserBooking(b.UserID, b.UserID, true)
+				bs.sendUserBooking(b.UserID, b.Id, true)
 				return nil
 			} else {
 				rsp.Successful = false
