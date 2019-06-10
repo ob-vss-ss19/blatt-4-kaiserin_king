@@ -29,10 +29,12 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 		for i, v := range us.user {
 			if v.Id == req.Id {
 				us.user = append(us.user[:i], us.user[i+1:]...)
+				rsp.Successful = true
 				return nil
 			}
 		}
 	}
+	rsp.Successful = false
 	return nil
 }
 
