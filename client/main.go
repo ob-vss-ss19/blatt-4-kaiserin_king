@@ -119,11 +119,17 @@ func main() {
 	fmt.Println("----------------")
 	fmt.Println("----------------")
 
+	rspS , err = showC.GetShowList(context.TODO(), &show.GetShowListRequest{})
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("List of all shows: %v \n\n", rspS.Shows)
+
 	rspB, err = bookingC.GetBookingList(context.TODO(), &booking.GetListRequest{})
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("List of all Bookings: %v \n\n", rspB)
+	fmt.Printf("List of all Bookings: %v \n\n", rspB.Bookings)
 
 	rspU, err = userC.GetUserList(context.TODO(), &user.GetUserListRequest{})
 	if err != nil {

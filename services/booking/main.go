@@ -4,19 +4,20 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
+	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 	"log"
-
-	"github.com/micro/go-micro"
-	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
+	"sync"
 )
 
 type BService struct {
 	booking      []*booking.BookingData
 	notConfirmed []*booking.BookingData
 	nextID       int32
+	mux	sync.Mutex
 }
 
 func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookingRequest, rsp *booking.CreateBookingResult) error {
@@ -64,18 +65,23 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 	// move booking from notConfirmed to booking list
 	for i, b := range bs.notConfirmed {
 		if b.Id == req.Id {
+			bs.mux.Lock()
 			if bs.checkSeats(b.ShowID) >= b.Seats {
 				bs.booking = append(bs.booking, b)
 				// aus notConfirmed loeschen
 				bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
-				bs.updateSeats(b.ShowID)
+				bs.updateSeats(b.ShowID, b.Seats)
 				rsp.Successful = true
 				bs.sendUserBooking(b.UserID, b.Id, true)
+				bs.mux.Unlock()
 				return nil
 			} else {
+				bs.informUser(b.UserID, b.Id)
 				rsp.Successful = false
+				bs.mux.Unlock()
 				return nil
 			}
+			bs.mux.Unlock()
 		}
 	}
 	rsp.Successful = false
@@ -146,15 +152,14 @@ func (bs *BService) checkSeats(showID int32) int32 {
 	if err != nil {
 		fmt.Println(err)
 	}
-
 	return rspShow.FreeSeats
 }
 
-func (bs *BService) updateSeats(showID int32) {
+func (bs *BService) updateSeats(showID int32, amount int32) {
 	var client client.Client
 	showC := show.NewShowService("go.micro.services.show", client)
 
-	_, err := showC.UpdateSeats(context.TODO(), &show.UpdateSeatsRequest{ShowID: showID})
+	_, err := showC.UpdateSeats(context.TODO(), &show.UpdateSeatsRequest{ShowID: showID, AmountSeats: amount})
 	if err != nil {
 		fmt.Println(err)
 	}
