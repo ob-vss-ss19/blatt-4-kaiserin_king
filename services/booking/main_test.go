@@ -8,7 +8,7 @@ import (
 )
 
 func TestBookingGetList(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 0}
+	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 1}
 	rsp := &booking.GetListResult{}
 	err := service.GetBookingList(context.TODO(), &booking.GetListRequest{}, rsp)
 	if err == nil {
@@ -61,7 +61,7 @@ func TestBookingGetList(t *testing.T) {
 }
 
 func TestBookingTooMuchSeats(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 0}
+	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 1}
 
 	rspCreate := &booking.CreateBookingResult{}
 	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 1, Seats: 500}, rspCreate)
@@ -72,7 +72,7 @@ func TestBookingTooMuchSeats(t *testing.T) {
 }
 
 func TestBookingTwoConfirmed(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 0}
+	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 1}
 
 	rspCreate := &booking.CreateBookingResult{}
 	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 1, Seats: 200}, rspCreate)
@@ -100,7 +100,7 @@ func TestBookingTwoConfirmed(t *testing.T) {
 }
 
 func TestBookingDelete(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 0}
+	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 1}
 	rsp := &booking.GetListResult{}
 
 	rspCreate := &booking.CreateBookingResult{}
