@@ -81,7 +81,6 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 				bs.mux.Unlock()
 				return nil
 			}
-			bs.mux.Unlock()
 		}
 	}
 	rsp.Successful = false
