@@ -20,6 +20,8 @@ type SService struct {
 	mux          sync.Mutex
 }
 
+//Function that creats a new show requested with an HallId and MovieID.
+//If both ID's exist the function returns a valid showID, else it returns -1.
 func (shs *SService) CreateShow(ctx context.Context, req *show.CreateShowRequest, rsp *show.CreateShowResult) error {
 	if shs.movieExist(req.MovieID) && shs.hallExist(req.HallID) {
 		shs.mux.Lock()
@@ -43,6 +45,8 @@ func (shs *SService) CreateShow(ctx context.Context, req *show.CreateShowRequest
 	return nil
 }
 
+//Function to delete a show given by its ID.
+//Return if the operation was successful by bool value.
 func (shs *SService) DeleteShow(ctx context.Context, req *show.DeleteShowRequest, rsp *show.DeleteShowResult) error {
 	for i, v := range shs.show {
 		if v.Id == req.Id {
@@ -57,6 +61,8 @@ func (shs *SService) DeleteShow(ctx context.Context, req *show.DeleteShowRequest
 	return nil
 }
 
+//Function that get called if a hall got deleted, existing shows in this hall have to be removed.
+//Gets the Id of the deleted hall and returns if the operation was successful by bool value.
 func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfHallRequest,
 	rsp *show.DeleteShowOfHallResult) error {
 	success := false
@@ -73,6 +79,8 @@ func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfH
 	return nil
 }
 
+//Function that get called if a movie got deleted, existing shows which are using this movie have to be removed.
+//Gets the Id of the deleted movie and returns if the operation was successful by bool value.
 func (shs *SService) FromMovieDelete(ctx context.Context, req *show.DeleteShowOfMovieRequest,
 	rsp *show.DeleteShowOfMovieResult) error {
 	success := false
@@ -89,6 +97,7 @@ func (shs *SService) FromMovieDelete(ctx context.Context, req *show.DeleteShowOf
 	return nil
 }
 
+//Function that return the amount of current free seats in show, requested with the showID.
 func (shs *SService) AskSeats(ctx context.Context, req *show.FreeSeatsRequest, rsp *show.FreeSeatsResult) error {
 	for _, s := range shs.show {
 		if s.Id == req.ShowID {
@@ -100,6 +109,7 @@ func (shs *SService) AskSeats(ctx context.Context, req *show.FreeSeatsRequest, r
 	return nil
 }
 
+//Function that updates amount of current free seats in show, requested with the showID and amount of booked seats.
 func (shs *SService) UpdateSeats(ctx context.Context, req *show.UpdateSeatsRequest, rsp *show.UpdateSeatsResult) error {
 	for _, s := range shs.show {
 		if s.Id == req.ShowID {
@@ -114,11 +124,13 @@ func (shs *SService) UpdateSeats(ctx context.Context, req *show.UpdateSeatsReque
 	return nil
 }
 
+//Function that returns the list of all shows.
 func (shs *SService) GetShowList(ctx context.Context, req *show.GetShowListRequest, rsp *show.GetShowListResult) error {
 	rsp.Shows = shs.show
 	return nil
 }
 
+//Function that returns if a movie given by its ID does exist.
 func (shs *SService) movieExist(movieID int32) bool {
 	var client client.Client
 	movieC := movie.NewMovieService("go.micro.services.movie", client)
@@ -132,6 +144,7 @@ func (shs *SService) movieExist(movieID int32) bool {
 	return rsp.Exist
 }
 
+//Function that returns if a hall given by its ID does exist.
 func (shs *SService) hallExist(hallID int32) bool {
 	var client client.Client
 	cinemaC := cinema.NewCinemaService("go.micro.services.cinema", client)
@@ -145,6 +158,7 @@ func (shs *SService) hallExist(hallID int32) bool {
 	return rsp.Exist
 }
 
+//Function that returns if a Show given by its ID does exist.
 func (shs *SService) Exist(ctx context.Context, req *show.ExistRequest, rsp *show.ExistResult) error {
 	for _, s := range shs.show {
 		if s.Id == req.Id {
@@ -156,6 +170,7 @@ func (shs *SService) Exist(ctx context.Context, req *show.ExistRequest, rsp *sho
 	return nil
 }
 
+//Function that deletes a show from the list and informs the bookingservice about the delete.
 func (shs *SService) delete(index int, showID int32) {
 	shs.show = append(shs.show[:index], shs.show[index+1:]...)
 
@@ -185,6 +200,7 @@ func main() {
 	}
 }
 
+//Example Data of show which is added to Service from Beginn
 func exampleData() []*show.ShowData {
 	shows := make([]*show.ShowData, 0)
 	shows = append(shows, &show.ShowData{Id: 1, MovieID: 1, HallID: 2, FreeSeats: 482})

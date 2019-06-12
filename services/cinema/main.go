@@ -19,6 +19,8 @@ type CService struct {
 	mux          sync.Mutex
 }
 
+//Function to create a new Cinemahall by request with an name for the hall.
+//Returns the id of the created hall
 func (cs *CService) CreateHall(ctx context.Context, req *cinema.CreateHallRequest, rsp *cinema.CreateHallResult) error {
 	cs.mux.Lock()
 	givenID := cs.nextID
@@ -31,6 +33,8 @@ func (cs *CService) CreateHall(ctx context.Context, req *cinema.CreateHallReques
 	return nil
 }
 
+//Function to delete a Hell requested by the ID.
+//Returnsn if the operation is successful by bool value.
 func (cs *CService) DeleteHall(ctx context.Context, req *cinema.DeleteHallRequest, rsp *cinema.DeleteHallResult) error {
 	// check if there are bookings for given id / hall
 	for i, h := range cs.cHall {
@@ -55,6 +59,7 @@ func (cs *CService) DeleteHall(ctx context.Context, req *cinema.DeleteHallReques
 	return nil
 }
 
+//Function that returns the amount of seats that the hall given by its ID has.
 func (cs *CService) AskSeats(ctx context.Context, req *cinema.FreeSeatsRequest, rsp *cinema.FreeSeatsResult) error {
 	for _, h := range cs.cHall {
 		if h.Id == req.HallID {
@@ -66,12 +71,14 @@ func (cs *CService) AskSeats(ctx context.Context, req *cinema.FreeSeatsRequest, 
 	return nil
 }
 
+//Function that return List of all halls.
 func (cs *CService) GetHallList(ctx context.Context, req *cinema.GetHallListRequest,
 	rsp *cinema.GetHallListResult) error {
 	rsp.CHall = cs.cHall
 	return nil
 }
 
+//Function that returns if an hall given by its ID exist.
 func (cs *CService) Exist(ctx context.Context, req *cinema.ExistRequest, rsp *cinema.ExistResult) error {
 	for _, c := range cs.cHall {
 		if c.Id == req.Id {
@@ -100,6 +107,7 @@ func main() {
 	}
 }
 
+//Returns example Data of cinemahalls used in der Service
 func exampleData() []*cinema.CinemaHall {
 	halls := make([]*cinema.CinemaHall, 0)
 	halls = append(halls, &cinema.CinemaHall{Id: 1, Name: "Kino 9", Rows: 5, Cols: 7})

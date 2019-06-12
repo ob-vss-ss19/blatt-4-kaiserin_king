@@ -16,6 +16,8 @@ type UService struct {
 	mux          sync.Mutex
 }
 
+//Function that creats a new user, which is requested with a name.
+//Return the ID of the new user.
 func (us *UService) CreateUser(ctx context.Context, req *user.CreateUserRequest, rsp *user.CreateUserResult) error {
 	us.mux.Lock()
 	givenID := us.nextID
@@ -27,6 +29,8 @@ func (us *UService) CreateUser(ctx context.Context, req *user.CreateUserRequest,
 	return nil
 }
 
+//Function that deletes user by ID.
+//Returns success of the operation by bool value.
 func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest, rsp *user.DeleteUserResult) error {
 	// delete only if no bookings
 	if us.CheckBookingOfUser(req.Id) {
@@ -45,6 +49,8 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 	return nil
 }
 
+//Function that gets called if an booking the Deleted.
+//The booking will be removed from the user.
 func (us *UService) BookingDeleted(ctx context.Context, req *user.BookingDeletedRequest,
 	rsp *user.BookingDeletedResult) error {
 	us.mux.Lock()
@@ -55,6 +61,7 @@ func (us *UService) BookingDeleted(ctx context.Context, req *user.BookingDeleted
 	return nil
 }
 
+//Function that adds the id of a new not-confirmed-Booking.
 func (us *UService) CreatedMarkedBooking(ctx context.Context, req *user.CreatedBookingRequest,
 	rsp *user.CreatedBookingResult) error {
 	for _, u := range us.user {
@@ -65,6 +72,7 @@ func (us *UService) CreatedMarkedBooking(ctx context.Context, req *user.CreatedB
 	return nil
 }
 
+//Function that adds the id of a new confirmed Booking.
 func (us *UService) CreatedBooking(ctx context.Context, req *user.CreatedBookingRequest,
 	rsp *user.CreatedBookingResult) error {
 	for _, u := range us.user {
@@ -77,11 +85,13 @@ func (us *UService) CreatedBooking(ctx context.Context, req *user.CreatedBooking
 	return nil
 }
 
+//Function that returns list of all users.
 func (us *UService) GetUserList(ctx context.Context, req *user.GetUserListRequest, rsp *user.GetUserListResult) error {
 	rsp.Users = us.user
 	return nil
 }
 
+//Function that returns if a user, given by his ID does exist.
 func (us *UService) Exist(ctx context.Context, req *user.ExistRequest, rsp *user.ExistResult) error {
 	for _, u := range us.user {
 		if u.Id == req.Id {
@@ -93,6 +103,7 @@ func (us *UService) Exist(ctx context.Context, req *user.ExistRequest, rsp *user
 	return nil
 }
 
+//Function that deletes a not-confirmed-booking from List of user.
 func (us *UService) deleteNotConfirmed(userID int32, bookingID int32) bool {
 	for _, u := range us.user {
 		if u.Id == userID {
@@ -107,6 +118,7 @@ func (us *UService) deleteNotConfirmed(userID int32, bookingID int32) bool {
 	return false
 }
 
+//Function that deletes a confirmed booking from List of a user.
 func (us *UService) deleteBooking(userID int32, bookingID int32) bool {
 	for _, u := range us.user {
 		if u.Id == userID {
@@ -121,6 +133,7 @@ func (us *UService) deleteBooking(userID int32, bookingID int32) bool {
 	return false
 }
 
+//Function that checks if a user got bookings.
 func (us *UService) CheckBookingOfUser(userID int32) bool {
 	// look if there are bookings of userID
 	for _, u := range us.user {
@@ -155,6 +168,7 @@ func main() {
 	}
 }
 
+//Example Data of users which are added to the Service from Beginning
 func exampleData() []*user.UserData {
 	users := make([]*user.UserData, 0)
 	users = append(users, &user.UserData{Id: 1, Name: "Maxi King",

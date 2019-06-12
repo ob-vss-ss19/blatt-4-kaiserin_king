@@ -18,6 +18,8 @@ type MService struct {
 	mux          sync.Mutex
 }
 
+//Function to create a new Movie, requested with a name for the movie.
+//Returns ID of the created movie.
 func (ms *MService) CreateMovie(ctx context.Context, req *movie.CreateMovieRequest,
 	rsp *movie.CreateMovieResult) error {
 	ms.mux.Lock()
@@ -30,6 +32,8 @@ func (ms *MService) CreateMovie(ctx context.Context, req *movie.CreateMovieReque
 	return nil
 }
 
+//Function that deletes a movie which is requested by the ID.
+//Returns if operation is successful by bool value.
 func (ms *MService) DeleteMovie(ctx context.Context, req *movie.DeleteMovieRequest,
 	rsp *movie.DeleteMovieResult) error {
 	// check if movie is used for bookings or shows
@@ -54,12 +58,14 @@ func (ms *MService) DeleteMovie(ctx context.Context, req *movie.DeleteMovieReque
 	return nil
 }
 
+//Function that return List of all movies.
 func (ms *MService) GetMovieList(ctx context.Context, req *movie.GetMovieListRequest,
 	rsp *movie.GetMovieListResult) error {
 	rsp.Movies = ms.movie
 	return nil
 }
 
+//Function that return if a  movie, given by its ID does exist.
 func (ms *MService) Exist(ctx context.Context, req *movie.ExistRequest, rsp *movie.ExistResult) error {
 	for _, m := range ms.movie {
 		if m.Id == req.Id {
@@ -88,6 +94,7 @@ func main() {
 	}
 }
 
+//Example Data of movies which is added to the Service
 func exampleData() []*movie.MovieData {
 	movies := make([]*movie.MovieData, 0)
 	movies = append(movies, &movie.MovieData{Id: 1, Titel: "Deadpool"})
