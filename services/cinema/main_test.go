@@ -70,3 +70,46 @@ func TestCinemaDeleteWrongID(t *testing.T) {
 	}
 
 }
+
+func TestAskForSeats(t *testing.T) {
+	service := CService{cHall: make([]*cinema.CinemaHall, 0), nextID: 1}
+
+	rspCreate := &cinema.CreateHallResult{}
+	service.CreateHall(context.TODO(), &cinema.CreateHallRequest{Name: "Kino1", Rows: 10, Cols: 3}, rspCreate)
+
+	rspSeats := &cinema.FreeSeatsResult{}
+	service.AskSeats(context.TODO(), &cinema.FreeSeatsRequest{HallID: rspCreate.Id}, rspSeats)
+
+	if rspSeats.FreeSeats != 30 {
+		t.Errorf("Expected 30 seats but got %v", rspSeats.FreeSeats)
+	}
+
+	rspSeats = &cinema.FreeSeatsResult{}
+	service.AskSeats(context.TODO(), &cinema.FreeSeatsRequest{HallID: 200}, rspSeats)
+
+	if rspSeats.FreeSeats != -1 {
+		t.Errorf("Expected 30 seats but got %v", rspSeats.FreeSeats)
+	}
+}
+
+func TestAskExist(t *testing.T) {
+	service := CService{cHall: make([]*cinema.CinemaHall, 0), nextID: 1}
+
+	rspCreate := &cinema.CreateHallResult{}
+	service.CreateHall(context.TODO(), &cinema.CreateHallRequest{Name: "Kino1", Rows: 10, Cols: 3}, rspCreate)
+
+	rspExist := &cinema.ExistResult{}
+	service.Exist(context.TODO(), &cinema.ExistRequest{Id:rspCreate.Id}, rspExist)
+
+	if !rspExist.Exist {
+		t.Error("Expected existing hall")
+	}
+
+	rspExist = &cinema.ExistResult{}
+	service.Exist(context.TODO(), &cinema.ExistRequest{Id:200}, rspExist)
+
+	if rspExist.Exist {
+		t.Error("Expected not existing hall")
+	}
+
+}

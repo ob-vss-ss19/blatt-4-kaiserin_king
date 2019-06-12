@@ -34,6 +34,7 @@ func (shs *SService) CreateShow(ctx context.Context, req *show.CreateShowRequest
 		shs.show = append(shs.show,
 			&show.ShowData{HallID: req.HallID, MovieID: req.MovieID, Id: givenID, FreeSeats: resSeats.FreeSeats})
 		rsp.Id = givenID
+		return nil
 	}
 	rsp.Id = -1
 	return nil
