@@ -21,7 +21,7 @@ func TestShow(t *testing.T) {
 	}
 
 	rspCreate := &user.CreateUserResult{}
-	err = service.CreateUser(context.TODO(), &user.CreateUserRequest{Name: "Max Mustermann"}, rspCreate)
+	_ = service.CreateUser(context.TODO(), &user.CreateUserRequest{Name: "Max Mustermann"}, rspCreate)
 
 	rspExist := &user.ExistResult{}
 	_ = service.Exist(context.TODO(), &user.ExistRequest{Id: rspCreate.Id}, rspExist)

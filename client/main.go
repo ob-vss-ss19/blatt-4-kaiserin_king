@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+
 	"github.com/micro/go-micro/client"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"

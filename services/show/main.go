@@ -94,7 +94,7 @@ func (shs *SService) AskSeats(ctx context.Context, req *show.FreeSeatsRequest, r
 func (shs *SService) UpdateSeats(ctx context.Context, req *show.UpdateSeatsRequest, rsp *show.UpdateSeatsResult) error {
 	for _, s := range shs.show {
 		if s.Id == req.ShowID {
-			s.FreeSeats = s.FreeSeats - req.AmountSeats
+			s.FreeSeats -= req.AmountSeats
 			rsp.Success = true
 			return nil
 		}

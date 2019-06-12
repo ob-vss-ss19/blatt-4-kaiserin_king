@@ -82,12 +82,11 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 				bs.sendUserBooking(b.UserID, b.Id, true)
 				bs.mux.Unlock()
 				return nil
-			} else {
-				bs.informUser(b.UserID, b.Id)
-				rsp.Successful = false
-				bs.mux.Unlock()
-				return nil
 			}
+			bs.informUser(b.UserID, b.Id)
+			rsp.Successful = false
+			bs.mux.Unlock()
+			return nil
 		}
 	}
 	rsp.Successful = false
