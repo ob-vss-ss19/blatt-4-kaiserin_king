@@ -172,3 +172,134 @@ func TestBookingDelete(t *testing.T) {
 	}
 
 }
+
+func TestCreateWrongID(t *testing.T) {
+	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 1}
+
+	rspCreate := &booking.CreateBookingResult{}
+	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 200, ShowID: 1, Seats: 1}, rspCreate)
+
+	if rspCreate.Id != -1 {
+		t.Error("Expected no booking")
+	}
+
+	rspCreate = &booking.CreateBookingResult{}
+	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 200, Seats: 1}, rspCreate)
+
+	if rspCreate.Id != -1 {
+		t.Error("Expected no booking")
+	}
+
+	rspCreate = &booking.CreateBookingResult{}
+	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 200, Seats: 200}, rspCreate)
+
+	if rspCreate.Id != -1 {
+		t.Error("Expected no booking")
+	}
+}
+
+func TestFromShowDelete(t *testing.T) {
+	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 1}
+
+	rspCreate1 := &booking.CreateBookingResult{}
+	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 1, Seats: 1}, rspCreate1)
+
+	rspConfirm := &booking.ConfirmBookingResult{}
+	service.ConfirmBooking(context.TODO(), &booking.ConfirmBookingRequest{Id: rspCreate1.Id}, rspConfirm)
+
+	rspCreate2 := &booking.CreateBookingResult{}
+	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 2, ShowID: 2, Seats: 1}, rspCreate2)
+
+	rsp := &booking.GetListResult{}
+	err := service.GetBookingList(context.TODO(), &booking.GetListRequest{}, rsp)
+	if err == nil {
+		if len(rsp.Bookings) != 1 {
+			t.Error("Expected list with one element! \n")
+		}
+	} else {
+		t.Errorf("Error for List Request: %v \n", err)
+	}
+
+	err = service.GetNotConfirmedList(context.TODO(), &booking.GetListRequest{}, rsp)
+	if err == nil {
+		if len(rsp.Bookings) != 1 {
+			t.Error("Expected list with one entry! \n")
+			println(len(rsp.Bookings))
+			fmt.Printf("%v\n", rsp.Bookings)
+		}
+	} else {
+		t.Errorf("Error for List Request: %v \n", err)
+	}
+
+	rspDelete := &booking.FromShowDeleteResult{}
+	service.FromShowDelete(context.TODO(), &booking.FromShowDeleteRequest{Id: 1}, rspDelete)
+
+	err = service.GetBookingList(context.TODO(), &booking.GetListRequest{}, rsp)
+	if err == nil {
+		if len(rsp.Bookings) != 0 {
+			t.Error("Expected empty list! \n")
+		}
+	} else {
+		t.Errorf("Error for List Request: %v \n", err)
+	}
+
+	rspDelete = &booking.FromShowDeleteResult{}
+	service.FromShowDelete(context.TODO(), &booking.FromShowDeleteRequest{Id: 2}, rspDelete)
+
+	if !rspDelete.Successful {
+		t.Error("Expected successful deleting!")
+	}
+
+	err = service.GetNotConfirmedList(context.TODO(), &booking.GetListRequest{}, rsp)
+	if err == nil {
+		if len(rsp.Bookings) != 0 {
+			t.Error("Expected empty list! \n")
+			println(len(rsp.Bookings))
+			fmt.Printf("%v\n", rsp.Bookings)
+		}
+	} else {
+		t.Errorf("Error for List Request: %v \n", err)
+	}
+
+	rspDelete = &booking.FromShowDeleteResult{}
+	service.FromShowDelete(context.TODO(), &booking.FromShowDeleteRequest{Id: 200}, rspDelete)
+
+	if rspDelete.Successful {
+		t.Error("Expected failing deleting!")
+	}
+}
+
+func TestExist(t *testing.T) {
+	service := BService{booking: make([]*booking.BookingData, 0), notConfirmed: make([]*booking.BookingData, 0), nextID: 1}
+
+	rspCreate1 := &booking.CreateBookingResult{}
+	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 1, Seats: 1}, rspCreate1)
+
+	rspConfirm := &booking.ConfirmBookingResult{}
+	service.ConfirmBooking(context.TODO(), &booking.ConfirmBookingRequest{Id: rspCreate1.Id}, rspConfirm)
+
+	rspCreate2 := &booking.CreateBookingResult{}
+	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 2, ShowID: 2, Seats: 1}, rspCreate2)
+
+	rspExist := &booking.ExistResult{}
+	service.Exist(context.TODO(), &booking.ExistRequest{Id: rspCreate1.Id}, rspExist)
+
+	if !rspExist.Exist {
+		t.Error("Expected that booking excists")
+	}
+
+	rspExist = &booking.ExistResult{}
+	service.Exist(context.TODO(), &booking.ExistRequest{Id: rspCreate2.Id}, rspExist)
+
+	if !rspExist.Exist {
+		t.Error("Expected that booking excists")
+	}
+
+	rspExist = &booking.ExistResult{}
+	service.Exist(context.TODO(), &booking.ExistRequest{Id: 200}, rspExist)
+
+	if rspExist.Exist {
+		t.Error("Expected that booking not exists")
+	}
+
+}
