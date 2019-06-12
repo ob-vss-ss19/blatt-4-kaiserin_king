@@ -88,7 +88,7 @@ func TestShow(t *testing.T) {
 }
 
 func TestShowDeleting(t *testing.T) {
-	service := UService{user: exampleData(), nextID: 1}
+	service := UService{user: exampleData(), nextID: 5}
 
 	rspDeleteBooking := &user.BookingDeletedResult{}
 	_ = service.BookingDeleted(context.TODO(), &user.BookingDeletedRequest{UserID: 4, BookingID: 2}, rspDeleteBooking)

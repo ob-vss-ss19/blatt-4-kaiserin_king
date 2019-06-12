@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
@@ -14,12 +15,15 @@ import (
 type MService struct {
 	movie  []*movie.MovieData
 	nextID int32
+	mux          sync.Mutex
 }
 
 func (ms *MService) CreateMovie(ctx context.Context, req *movie.CreateMovieRequest,
 	rsp *movie.CreateMovieResult) error {
+	ms.mux.Lock()
 	givenID := ms.nextID
 	ms.nextID++
+	ms.mux.Unlock()
 	ms.movie = append(ms.movie, &movie.MovieData{Titel: req.Titel, Id: givenID})
 	rsp.Id = givenID
 
@@ -39,7 +43,9 @@ func (ms *MService) DeleteMovie(ctx context.Context, req *movie.DeleteMovieReque
 	//delete Movie from MovieService
 	for i, v := range ms.movie {
 		if v.Id == req.Id {
+			ms.mux.Lock()
 			ms.movie = append(ms.movie[:i], ms.movie[i+1:]...)
+			ms.mux.Unlock()
 			rsp.Successful = true
 			return nil
 		}

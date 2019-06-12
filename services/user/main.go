@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 
 	"github.com/micro/go-micro"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
@@ -12,10 +13,13 @@ import (
 type UService struct {
 	user   []*user.UserData
 	nextID int32
+	mux          sync.Mutex
 }
 
 func (us *UService) CreateUser(ctx context.Context, req *user.CreateUserRequest, rsp *user.CreateUserResult) error {
+	us.mux.Lock()
 	givenID := us.nextID
+	us.mux.Unlock()
 	us.nextID++
 	us.user = append(us.user, &user.UserData{Name: req.Name, Id: givenID})
 	rsp.Id = givenID
@@ -29,7 +33,9 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 		// kann geloescht werden, da keine Reservierungen vorhanden für aktuellen user
 		for i, v := range us.user {
 			if v.Id == req.Id {
+				us.mux.Lock()
 				us.user = append(us.user[:i], us.user[i+1:]...)
+				us.mux.Unlock()
 				rsp.Successful = true
 				return nil
 			}
@@ -41,9 +47,11 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 
 func (us *UService) BookingDeleted(ctx context.Context, req *user.BookingDeletedRequest,
 	rsp *user.BookingDeletedResult) error {
+	us.mux.Lock()
 	if !us.deleteBooking(req.UserID, req.BookingID) {
 		us.deleteNotConfirmed(req.UserID, req.BookingID)
 	}
+	us.mux.Unlock()
 	return nil
 }
 

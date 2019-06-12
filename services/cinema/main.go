@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
@@ -15,12 +16,16 @@ import (
 type CService struct {
 	cHall  []*cinema.CinemaHall
 	nextID int32
+	mux          sync.Mutex
 }
 
 func (cs *CService) CreateHall(ctx context.Context, req *cinema.CreateHallRequest, rsp *cinema.CreateHallResult) error {
+	cs.mux.Lock()
 	givenID := cs.nextID
 	cs.nextID++
+	cs.mux.Unlock()
 	cs.cHall = append(cs.cHall, &cinema.CinemaHall{Name: req.Name, Rows: req.Rows, Cols: req.Cols, Id: givenID})
+
 	rsp.Id = givenID
 
 	return nil
@@ -34,13 +39,14 @@ func (cs *CService) DeleteHall(ctx context.Context, req *cinema.DeleteHallReques
 			//Send HallID to Showservice to delete all shows
 			var client client.Client
 			showC := show.NewShowService("go.micro.services.show", client)
-
+			cs.mux.Lock()
 			_, err := showC.FromHallDelete(context.TODO(), &show.DeleteShowOfHallRequest{HallID: req.Id})
 			if err != nil {
 				fmt.Println(err)
 			}
 			//delete Hall from CinemaService
 			cs.cHall = append(cs.cHall[:i], cs.cHall[i+1:]...)
+			cs.mux.Unlock()
 			rsp.Successful = true
 			return nil
 		}

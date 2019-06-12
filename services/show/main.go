@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"sync"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
@@ -16,13 +17,15 @@ import (
 type SService struct {
 	show   []*show.ShowData
 	nextID int32
+	mux          sync.Mutex
 }
 
 func (shs *SService) CreateShow(ctx context.Context, req *show.CreateShowRequest, rsp *show.CreateShowResult) error {
-	givenID := shs.nextID
-	shs.nextID++
-
 	if shs.movieExist(req.MovieID) && shs.hallExist(req.HallID) {
+		shs.mux.Lock()
+		givenID := shs.nextID
+		shs.mux.Unlock()
+		shs.nextID++
 		var client client.Client
 		cinemaC := cinema.NewCinemaService("go.micro.services.cinema", client)
 
@@ -43,7 +46,9 @@ func (shs *SService) CreateShow(ctx context.Context, req *show.CreateShowRequest
 func (shs *SService) DeleteShow(ctx context.Context, req *show.DeleteShowRequest, rsp *show.DeleteShowResult) error {
 	for i, v := range shs.show {
 		if v.Id == req.Id {
+			shs.mux.Lock()
 			shs.delete(i, v.Id)
+			shs.mux.Unlock()
 			rsp.Successful = true
 			return nil
 		}
@@ -58,7 +63,9 @@ func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfH
 	//Got the Id of an Hall which no longer exists
 	for i, v := range shs.show {
 		if v.HallID == req.HallID {
+			shs.mux.Lock()
 			shs.delete(i, v.Id)
+			shs.mux.Unlock()
 			success = true
 		}
 	}
@@ -72,7 +79,9 @@ func (shs *SService) FromMovieDelete(ctx context.Context, req *show.DeleteShowOf
 	//Got the Id of an Hall which no longer exists
 	for i, v := range shs.show {
 		if v.MovieID == req.MovieID {
+			shs.mux.Lock()
 			shs.delete(i, v.Id)
+			shs.mux.Unlock()
 			success = true
 		}
 	}
@@ -94,7 +103,9 @@ func (shs *SService) AskSeats(ctx context.Context, req *show.FreeSeatsRequest, r
 func (shs *SService) UpdateSeats(ctx context.Context, req *show.UpdateSeatsRequest, rsp *show.UpdateSeatsResult) error {
 	for _, s := range shs.show {
 		if s.Id == req.ShowID {
+			shs.mux.Lock()
 			s.FreeSeats -= req.AmountSeats
+			shs.mux.Unlock()
 			rsp.Success = true
 			return nil
 		}

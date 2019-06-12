@@ -23,11 +23,13 @@ type BService struct {
 func (bs *BService) CreateBooking(ctx context.Context,
 	req *booking.CreateBookingRequest,
 	rsp *booking.CreateBookingResult) error {
-	givenID := bs.nextID
-	bs.nextID++
 
 	if bs.userExist(req.UserID) && bs.showExist(req.ShowID) {
 		if bs.checkSeats(req.ShowID) >= req.Seats {
+			bs.mux.Lock()
+			givenID := bs.nextID
+			bs.nextID++
+			bs.mux.Unlock()
 			bs.notConfirmed = append(bs.notConfirmed,
 				&booking.BookingData{UserID: req.UserID, ShowID: req.ShowID, Seats: req.Seats, Id: givenID})
 			rsp.Id = givenID
@@ -50,7 +52,9 @@ func (bs *BService) DeleteBooking(ctx context.Context, req *booking.DeleteBookin
 	for i, b := range bs.booking {
 		if b.Id == req.Id {
 			//bs.booking = append(bs.booking[:i], bs.booking[i+1:]...)
+			bs.mux.Lock()
 			bs.deleteFromBooking(i, b.UserID, b.Id)
+			bs.mux.Unlock()
 			rsp.Successful = true
 			return nil
 		}
@@ -72,20 +76,19 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 	// move booking from notConfirmed to booking list
 	for i, b := range bs.notConfirmed {
 		if b.Id == req.Id {
-			bs.mux.Lock()
 			if bs.checkSeats(b.ShowID) >= b.Seats {
+				bs.mux.Lock()
 				bs.booking = append(bs.booking, b)
 				// aus notConfirmed loeschen
 				bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
 				bs.updateSeats(b.ShowID, b.Seats)
+				bs.mux.Unlock()
 				rsp.Successful = true
 				bs.sendUserBooking(b.UserID, b.Id, true)
-				bs.mux.Unlock()
 				return nil
 			}
 			bs.informUser(b.UserID, b.Id)
 			rsp.Successful = false
-			bs.mux.Unlock()
 			return nil
 		}
 	}
@@ -101,14 +104,18 @@ func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDel
 	for i, b := range bs.booking {
 		if b.ShowID == req.Id {
 			//bs.booking = append(bs.booking[:i], bs.booking[i+1:]...)
+			bs.mux.Lock()
 			bs.deleteFromBooking(i, b.UserID, b.Id)
+			bs.mux.Unlock()
 			success = true
 		}
 	}
 	for i, b := range bs.notConfirmed {
 		if b.ShowID == req.Id {
 			//bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
+			bs.mux.Lock()
 			bs.deleteFromNotConfirmed(i, b.UserID, b.Id)
+			bs.mux.Unlock()
 			success = true
 		}
 	}
