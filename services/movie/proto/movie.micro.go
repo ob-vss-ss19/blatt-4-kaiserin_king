@@ -37,6 +37,7 @@ type MovieService interface {
 	DeleteMovie(ctx context.Context, in *DeleteMovieRequest, opts ...client.CallOption) (*DeleteMovieResult, error)
 	CreateMovie(ctx context.Context, in *CreateMovieRequest, opts ...client.CallOption) (*CreateMovieResult, error)
 	GetMovieList(ctx context.Context, in *GetMovieListRequest, opts ...client.CallOption) (*GetMovieListResult, error)
+	Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error)
 }
 
 type movieService struct {
@@ -87,12 +88,23 @@ func (c *movieService) GetMovieList(ctx context.Context, in *GetMovieListRequest
 	return out, nil
 }
 
+func (c *movieService) Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error) {
+	req := c.c.NewRequest(c.name, "Movie.Exist", in)
+	out := new(ExistResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Movie service
 
 type MovieHandler interface {
 	DeleteMovie(context.Context, *DeleteMovieRequest, *DeleteMovieResult) error
 	CreateMovie(context.Context, *CreateMovieRequest, *CreateMovieResult) error
 	GetMovieList(context.Context, *GetMovieListRequest, *GetMovieListResult) error
+	Exist(context.Context, *ExistRequest, *ExistResult) error
 }
 
 func RegisterMovieHandler(s server.Server, hdlr MovieHandler, opts ...server.HandlerOption) error {
@@ -100,6 +112,7 @@ func RegisterMovieHandler(s server.Server, hdlr MovieHandler, opts ...server.Han
 		DeleteMovie(ctx context.Context, in *DeleteMovieRequest, out *DeleteMovieResult) error
 		CreateMovie(ctx context.Context, in *CreateMovieRequest, out *CreateMovieResult) error
 		GetMovieList(ctx context.Context, in *GetMovieListRequest, out *GetMovieListResult) error
+		Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error
 	}
 	type Movie struct {
 		movie
@@ -122,4 +135,8 @@ func (h *movieHandler) CreateMovie(ctx context.Context, in *CreateMovieRequest, 
 
 func (h *movieHandler) GetMovieList(ctx context.Context, in *GetMovieListRequest, out *GetMovieListResult) error {
 	return h.MovieHandler.GetMovieList(ctx, in, out)
+}
+
+func (h *movieHandler) Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error {
+	return h.MovieHandler.Exist(ctx, in, out)
 }

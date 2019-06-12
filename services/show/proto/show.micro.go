@@ -41,6 +41,7 @@ type ShowService interface {
 	AskSeats(ctx context.Context, in *FreeSeatsRequest, opts ...client.CallOption) (*FreeSeatsResult, error)
 	UpdateSeats(ctx context.Context, in *UpdateSeatsRequest, opts ...client.CallOption) (*UpdateSeatsResult, error)
 	GetShowList(ctx context.Context, in *GetShowListRequest, opts ...client.CallOption) (*GetShowListResult, error)
+	Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error)
 }
 
 type showService struct {
@@ -131,6 +132,16 @@ func (c *showService) GetShowList(ctx context.Context, in *GetShowListRequest, o
 	return out, nil
 }
 
+func (c *showService) Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error) {
+	req := c.c.NewRequest(c.name, "Show.Exist", in)
+	out := new(ExistResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Show service
 
 type ShowHandler interface {
@@ -141,6 +152,7 @@ type ShowHandler interface {
 	AskSeats(context.Context, *FreeSeatsRequest, *FreeSeatsResult) error
 	UpdateSeats(context.Context, *UpdateSeatsRequest, *UpdateSeatsResult) error
 	GetShowList(context.Context, *GetShowListRequest, *GetShowListResult) error
+	Exist(context.Context, *ExistRequest, *ExistResult) error
 }
 
 func RegisterShowHandler(s server.Server, hdlr ShowHandler, opts ...server.HandlerOption) error {
@@ -152,6 +164,7 @@ func RegisterShowHandler(s server.Server, hdlr ShowHandler, opts ...server.Handl
 		AskSeats(ctx context.Context, in *FreeSeatsRequest, out *FreeSeatsResult) error
 		UpdateSeats(ctx context.Context, in *UpdateSeatsRequest, out *UpdateSeatsResult) error
 		GetShowList(ctx context.Context, in *GetShowListRequest, out *GetShowListResult) error
+		Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error
 	}
 	type Show struct {
 		show
@@ -190,4 +203,8 @@ func (h *showHandler) UpdateSeats(ctx context.Context, in *UpdateSeatsRequest, o
 
 func (h *showHandler) GetShowList(ctx context.Context, in *GetShowListRequest, out *GetShowListResult) error {
 	return h.ShowHandler.GetShowList(ctx, in, out)
+}
+
+func (h *showHandler) Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error {
+	return h.ShowHandler.Exist(ctx, in, out)
 }

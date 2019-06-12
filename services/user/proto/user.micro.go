@@ -40,6 +40,7 @@ type UserService interface {
 	CreatedMarkedBooking(ctx context.Context, in *CreatedBookingRequest, opts ...client.CallOption) (*CreatedBookingResult, error)
 	CreatedBooking(ctx context.Context, in *CreatedBookingRequest, opts ...client.CallOption) (*CreatedBookingResult, error)
 	GetUserList(ctx context.Context, in *GetUserListRequest, opts ...client.CallOption) (*GetUserListResult, error)
+	Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error)
 }
 
 type userService struct {
@@ -120,6 +121,16 @@ func (c *userService) GetUserList(ctx context.Context, in *GetUserListRequest, o
 	return out, nil
 }
 
+func (c *userService) Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error) {
+	req := c.c.NewRequest(c.name, "User.Exist", in)
+	out := new(ExistResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
@@ -129,6 +140,7 @@ type UserHandler interface {
 	CreatedMarkedBooking(context.Context, *CreatedBookingRequest, *CreatedBookingResult) error
 	CreatedBooking(context.Context, *CreatedBookingRequest, *CreatedBookingResult) error
 	GetUserList(context.Context, *GetUserListRequest, *GetUserListResult) error
+	Exist(context.Context, *ExistRequest, *ExistResult) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
@@ -139,6 +151,7 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 		CreatedMarkedBooking(ctx context.Context, in *CreatedBookingRequest, out *CreatedBookingResult) error
 		CreatedBooking(ctx context.Context, in *CreatedBookingRequest, out *CreatedBookingResult) error
 		GetUserList(ctx context.Context, in *GetUserListRequest, out *GetUserListResult) error
+		Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error
 	}
 	type User struct {
 		user
@@ -173,4 +186,8 @@ func (h *userHandler) CreatedBooking(ctx context.Context, in *CreatedBookingRequ
 
 func (h *userHandler) GetUserList(ctx context.Context, in *GetUserListRequest, out *GetUserListResult) error {
 	return h.UserHandler.GetUserList(ctx, in, out)
+}
+
+func (h *userHandler) Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error {
+	return h.UserHandler.Exist(ctx, in, out)
 }
