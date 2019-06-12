@@ -31,31 +31,31 @@ func TestShow(t *testing.T) {
 	}
 
 	rspSeats := &show.FreeSeatsResult{}
-	service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID: rspCreate.Id}, rspSeats)
+	_ = service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID: rspCreate.Id}, rspSeats)
 	if rspSeats.FreeSeats != 35 {
 		t.Errorf("Expected 35 free seats but got %v", rspSeats.FreeSeats)
 	}
 
 	rspUpdate := &show.UpdateSeatsResult{}
-	service.UpdateSeats(context.TODO(), &show.UpdateSeatsRequest{ShowID: rspCreate.Id, AmountSeats: 5}, rspUpdate)
+	_ = service.UpdateSeats(context.TODO(), &show.UpdateSeatsRequest{ShowID: rspCreate.Id, AmountSeats: 5}, rspUpdate)
 	if !rspUpdate.Success {
 		t.Errorf("Expected successful update")
 	}
 
 	rspUpdate = &show.UpdateSeatsResult{}
-	service.UpdateSeats(context.TODO(), &show.UpdateSeatsRequest{ShowID: 200, AmountSeats: 5}, rspUpdate)
+	_ = service.UpdateSeats(context.TODO(), &show.UpdateSeatsRequest{ShowID: 200, AmountSeats: 5}, rspUpdate)
 	if rspUpdate.Success {
 		t.Errorf("Expected failing update")
 	}
 
 	rspSeats = &show.FreeSeatsResult{}
-	service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID: rspCreate.Id}, rspSeats)
+	_ = service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID: rspCreate.Id}, rspSeats)
 	if rspSeats.FreeSeats != 30 {
 		t.Errorf("Expected 30 free seats but got %v", rspSeats.FreeSeats)
 	}
 
 	rspSeats = &show.FreeSeatsResult{}
-	service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID: 200}, rspSeats)
+	_ = service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID: 200}, rspSeats)
 	if rspSeats.FreeSeats != -1 {
 		t.Errorf("Expected 30 free seats but got %v", rspSeats.FreeSeats)
 	}
@@ -141,7 +141,7 @@ func TestShow(t *testing.T) {
 	}
 
 	rspDeleteMovie = &show.DeleteShowOfMovieResult{}
-	service.FromMovieDelete(context.TODO(), &show.DeleteShowOfMovieRequest{MovieID: 200}, rspDeleteMovie)
+	_ = service.FromMovieDelete(context.TODO(), &show.DeleteShowOfMovieRequest{MovieID: 200}, rspDeleteMovie)
 	if rspDeleteMovie.Successful {
 		t.Error("Expected failing deleting from Movie")
 	}

@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"log"
 	"sync"
@@ -21,7 +20,9 @@ type BService struct {
 	mux          sync.Mutex
 }
 
-func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookingRequest, rsp *booking.CreateBookingResult) error {
+func (bs *BService) CreateBooking(ctx context.Context,
+	req *booking.CreateBookingRequest,
+	rsp *booking.CreateBookingResult) error {
 	givenID := bs.nextID
 	bs.nextID++
 
@@ -43,8 +44,8 @@ func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookin
 	return nil
 }
 
-func (bs *BService) DeleteBooking(ctx context.Context, req *booking.DeleteBookingRequest, rsp *booking.DeleteBookingResult) error {
-	// TODO: Inform user that booking was deleted
+func (bs *BService) DeleteBooking(ctx context.Context, req *booking.DeleteBookingRequest,
+	rsp *booking.DeleteBookingResult) error {
 	// Delete from booking or notConfirmed list
 	for i, b := range bs.booking {
 		if b.Id == req.Id {
@@ -66,7 +67,8 @@ func (bs *BService) DeleteBooking(ctx context.Context, req *booking.DeleteBookin
 	return nil
 }
 
-func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBookingRequest, rsp *booking.ConfirmBookingResult) error {
+func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBookingRequest,
+	rsp *booking.ConfirmBookingResult) error {
 	// move booking from notConfirmed to booking list
 	for i, b := range bs.notConfirmed {
 		if b.Id == req.Id {
@@ -92,7 +94,8 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 	return nil
 }
 
-func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDeleteRequest, rsp *booking.FromShowDeleteResult) error {
+func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDeleteRequest,
+	rsp *booking.FromShowDeleteResult) error {
 	success := false
 
 	// delete show with id -> delete bookings
@@ -114,7 +117,8 @@ func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDel
 	return nil
 }
 
-func (bs *BService) GetNotConfirmedList(ctx context.Context, req *booking.GetListRequest, rsp *booking.GetListResult) error {
+func (bs *BService) GetNotConfirmedList(ctx context.Context, req *booking.GetListRequest,
+	rsp *booking.GetListResult) error {
 	rsp.Bookings = bs.notConfirmed
 	return nil
 }
@@ -169,20 +173,20 @@ func (bs *BService) sendUserBooking(userID int32, bookingID int32, confirmed boo
 	var client client.Client
 	userC := user.NewUserService("go.micro.services.user", client)
 
-	err := errors.New("nil")
-	err = nil
-
 	if confirmed {
-		_, err = userC.CreatedBooking(context.TODO(),
+		_, err := userC.CreatedBooking(context.TODO(),
 			&user.CreatedBookingRequest{UserID: userID, BookingID: bookingID})
+		if err != nil {
+			fmt.Println(err)
+		}
 	} else {
-		_, err = userC.CreatedMarkedBooking(context.TODO(),
+		_, err := userC.CreatedMarkedBooking(context.TODO(),
 			&user.CreatedBookingRequest{UserID: userID, BookingID: bookingID})
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
-	if err != nil {
-		fmt.Println(err)
-	}
 }
 
 func (bs *BService) showExist(showID int32) bool {
@@ -235,7 +239,13 @@ func main() {
 	)
 
 	service.Init()
-	booking.RegisterBookingHandler(service.Server(), &BService{booking: exampleData(), notConfirmed: make([]*booking.BookingData, 0), nextID: 5})
+	err := booking.RegisterBookingHandler(service.Server(),
+		&BService{booking: exampleData(),
+			notConfirmed: make([]*booking.BookingData, 0),
+			nextID:       5})
+	if err != nil {
+		fmt.Println(err)
+	}
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())

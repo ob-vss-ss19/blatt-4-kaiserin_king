@@ -60,7 +60,8 @@ func (cs *CService) AskSeats(ctx context.Context, req *cinema.FreeSeatsRequest, 
 	return nil
 }
 
-func (cs *CService) GetHallList(ctx context.Context, req *cinema.GetHallListRequest, rsp *cinema.GetHallListResult) error {
+func (cs *CService) GetHallList(ctx context.Context, req *cinema.GetHallListRequest,
+	rsp *cinema.GetHallListResult) error {
 	rsp.CHall = cs.cHall
 	return nil
 }
@@ -83,7 +84,10 @@ func main() {
 	)
 
 	service.Init()
-	cinema.RegisterCinemaHandler(service.Server(), &CService{cHall: exampleData(), nextID: 3})
+	err := cinema.RegisterCinemaHandler(service.Server(), &CService{cHall: exampleData(), nextID: 3})
+	if err != nil {
+		fmt.Println(err)
+	}
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())

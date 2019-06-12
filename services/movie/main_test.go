@@ -22,17 +22,17 @@ func TestMovie(t *testing.T) {
 	}
 
 	rspCreate := &movie.CreateMovieResult{}
-	err = service.CreateMovie(context.TODO(), &movie.CreateMovieRequest{Titel: "Sex and The City"}, rspCreate)
+	_ = service.CreateMovie(context.TODO(), &movie.CreateMovieRequest{Titel: "Sex and The City"}, rspCreate)
 
 	rspExist := &movie.ExistResult{}
-	service.Exist(context.TODO(), &movie.ExistRequest{Id: rspCreate.Id}, rspExist)
+	_ = service.Exist(context.TODO(), &movie.ExistRequest{Id: rspCreate.Id}, rspExist)
 
 	if !rspExist.Exist {
 		t.Error("Expected movie to exist")
 	}
 
 	rspExist = &movie.ExistResult{}
-	service.Exist(context.TODO(), &movie.ExistRequest{Id: 200}, rspExist)
+	_ = service.Exist(context.TODO(), &movie.ExistRequest{Id: 200}, rspExist)
 
 	if rspExist.Exist {
 		t.Error("Expected movie not to exist")

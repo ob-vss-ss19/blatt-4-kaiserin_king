@@ -13,7 +13,6 @@ import (
 
 func main() {
 
-
 	var client client.Client
 	showC := show.NewShowService("go.micro.services.show", client)
 	bookingC := booking.NewBookingService("go.micro.services.booking", client)
@@ -21,8 +20,7 @@ func main() {
 	movieC := movie.NewMovieService("go.micro.services.movie", client)
 	userC := user.NewUserService("go.micro.services.user", client)
 
-
-	rspS , err := showC.GetShowList(context.TODO(), &show.GetShowListRequest{})
+	rspS, err := showC.GetShowList(context.TODO(), &show.GetShowListRequest{})
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -58,7 +56,6 @@ func main() {
 	}
 	fmt.Printf("List of all users: %v \n\n", rspU.Users)
 
-
 	fmt.Println("----------------")
 	fmt.Println("----------------")
 
@@ -68,13 +65,15 @@ func main() {
 	//}
 	//fmt.Printf("Delete was: %v \n\n", rspCD.Successful)
 
-	rspBTNC1, err := bookingC.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 2, ShowID: 2, Seats: 20})
+	rspBTNC1, err := bookingC.CreateBooking(context.TODO(),
+		&booking.CreateBookingRequest{UserID: 2, ShowID: 2, Seats: 20})
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Printf("First Booking ID: %v \n\n", rspBTNC1.Id)
 
-	rspBTNC2, err := bookingC.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 2, Seats: 20})
+	rspBTNC2, err := bookingC.CreateBooking(context.TODO(),
+		&booking.CreateBookingRequest{UserID: 1, ShowID: 2, Seats: 20})
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -119,7 +118,7 @@ func main() {
 	fmt.Println("----------------")
 	fmt.Println("----------------")
 
-	rspS , err = showC.GetShowList(context.TODO(), &show.GetShowListRequest{})
+	rspS, err = showC.GetShowList(context.TODO(), &show.GetShowListRequest{})
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -136,7 +135,5 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Printf("List of all users: %v \n\n", rspU.Users)
-
-
 
 }

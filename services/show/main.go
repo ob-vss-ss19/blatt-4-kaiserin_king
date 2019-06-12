@@ -52,7 +52,8 @@ func (shs *SService) DeleteShow(ctx context.Context, req *show.DeleteShowRequest
 	return nil
 }
 
-func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfHallRequest, rsp *show.DeleteShowOfHallResult) error {
+func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfHallRequest,
+	rsp *show.DeleteShowOfHallResult) error {
 	success := false
 	//Got the Id of an Hall which no longer exists
 	for i, v := range shs.show {
@@ -65,7 +66,8 @@ func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfH
 	return nil
 }
 
-func (shs *SService) FromMovieDelete(ctx context.Context, req *show.DeleteShowOfMovieRequest, rsp *show.DeleteShowOfMovieResult) error {
+func (shs *SService) FromMovieDelete(ctx context.Context, req *show.DeleteShowOfMovieRequest,
+	rsp *show.DeleteShowOfMovieResult) error {
 	success := false
 	//Got the Id of an Hall which no longer exists
 	for i, v := range shs.show {
@@ -162,7 +164,10 @@ func main() {
 	)
 
 	service.Init()
-	show.RegisterShowHandler(service.Server(), &SService{show: exampleData(), nextID: 5})
+	err := show.RegisterShowHandler(service.Server(), &SService{show: exampleData(), nextID: 5})
+	if err != nil {
+		fmt.Println(err)
+	}
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())

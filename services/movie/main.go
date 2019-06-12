@@ -16,7 +16,8 @@ type MService struct {
 	nextID int32
 }
 
-func (ms *MService) CreateMovie(ctx context.Context, req *movie.CreateMovieRequest, rsp *movie.CreateMovieResult) error {
+func (ms *MService) CreateMovie(ctx context.Context, req *movie.CreateMovieRequest,
+	rsp *movie.CreateMovieResult) error {
 	givenID := ms.nextID
 	ms.nextID++
 	ms.movie = append(ms.movie, &movie.MovieData{Titel: req.Titel, Id: givenID})
@@ -25,7 +26,8 @@ func (ms *MService) CreateMovie(ctx context.Context, req *movie.CreateMovieReque
 	return nil
 }
 
-func (ms *MService) DeleteMovie(ctx context.Context, req *movie.DeleteMovieRequest, rsp *movie.DeleteMovieResult) error {
+func (ms *MService) DeleteMovie(ctx context.Context, req *movie.DeleteMovieRequest,
+	rsp *movie.DeleteMovieResult) error {
 	// check if movie is used for bookings or shows
 	var client client.Client
 	showC := show.NewShowService("go.micro.services.show", client)
@@ -46,7 +48,8 @@ func (ms *MService) DeleteMovie(ctx context.Context, req *movie.DeleteMovieReque
 	return nil
 }
 
-func (ms *MService) GetMovieList(ctx context.Context, req *movie.GetMovieListRequest, rsp *movie.GetMovieListResult) error {
+func (ms *MService) GetMovieList(ctx context.Context, req *movie.GetMovieListRequest,
+	rsp *movie.GetMovieListResult) error {
 	rsp.Movies = ms.movie
 	return nil
 }
@@ -69,7 +72,10 @@ func main() {
 	)
 
 	service.Init()
-	movie.RegisterMovieHandler(service.Server(), &MService{movie: exampleData(), nextID: 5})
+	err := movie.RegisterMovieHandler(service.Server(), &MService{movie: exampleData(), nextID: 5})
+	if err != nil {
+		fmt.Println(err)
+	}
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())

@@ -39,14 +39,16 @@ func (us *UService) DeleteUser(ctx context.Context, req *user.DeleteUserRequest,
 	return nil
 }
 
-func (us *UService) BookingDeleted(ctx context.Context, req *user.BookingDeletedRequest, rsp *user.BookingDeletedResult) error {
+func (us *UService) BookingDeleted(ctx context.Context, req *user.BookingDeletedRequest,
+	rsp *user.BookingDeletedResult) error {
 	if !us.deleteBooking(req.UserID, req.BookingID) {
 		us.deleteNotConfirmed(req.UserID, req.BookingID)
 	}
 	return nil
 }
 
-func (us *UService) CreatedMarkedBooking(ctx context.Context, req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
+func (us *UService) CreatedMarkedBooking(ctx context.Context, req *user.CreatedBookingRequest,
+	rsp *user.CreatedBookingResult) error {
 	for _, u := range us.user {
 		if req.UserID == u.Id {
 			u.NotConfirmed = append(u.NotConfirmed, req.BookingID)
@@ -55,7 +57,8 @@ func (us *UService) CreatedMarkedBooking(ctx context.Context, req *user.CreatedB
 	return nil
 }
 
-func (us *UService) CreatedBooking(ctx context.Context, req *user.CreatedBookingRequest, rsp *user.CreatedBookingResult) error {
+func (us *UService) CreatedBooking(ctx context.Context, req *user.CreatedBookingRequest,
+	rsp *user.CreatedBookingResult) error {
 	for _, u := range us.user {
 		if u.Id == req.UserID {
 			u.Bookings = append(u.Bookings, req.BookingID)
@@ -134,7 +137,10 @@ func main() {
 	)
 
 	service.Init()
-	_ = user.RegisterUserHandler(service.Server(), &UService{user: exampleData(), nextID: 5})
+	err := user.RegisterUserHandler(service.Server(), &UService{user: exampleData(), nextID: 5})
+	if err != nil {
+		fmt.Println(err)
+	}
 	r := service.Run()
 	if r != nil {
 		log.Fatalf("Running service failed! %v\n", r.Error())
