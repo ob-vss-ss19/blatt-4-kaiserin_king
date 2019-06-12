@@ -5,10 +5,11 @@ import (
 	"testing"
 
 	movie "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/proto"
+	"github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv"
 )
 
 func TestMovie(t *testing.T) {
-	service := MService{movie: make([]*movie.MovieData, 0), nextID: 1}
+	service := srv.MService{Movie: make([]*movie.MovieData, 0), NextID: 1}
 
 	rsp := &movie.GetMovieListResult{}
 	err := service.GetMovieList(context.TODO(), &movie.GetMovieListRequest{}, rsp)

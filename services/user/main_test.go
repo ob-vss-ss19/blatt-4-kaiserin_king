@@ -4,11 +4,21 @@ import (
 	"context"
 	"testing"
 
+	bs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/srv"
+	cs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv"
+	ms "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv"
+	shs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/srv"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
+	"github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/srv"
 )
 
-func TestShow(t *testing.T) {
-	service := UService{user: make([]*user.UserData, 0), nextID: 1}
+func TestUser(t *testing.T) {
+	cs.RunService()
+	ms.RunService()
+	shs.RunService()
+	bs.RunService()
+
+	service := srv.UService{User: make([]*user.UserData, 0), NextID: 1}
 
 	rsp := &user.GetUserListResult{}
 	err := service.GetUserList(context.TODO(), &user.GetUserListRequest{}, rsp)
@@ -88,7 +98,7 @@ func TestShow(t *testing.T) {
 }
 
 func TestShowDeleting(t *testing.T) {
-	service := UService{user: exampleData(), nextID: 5}
+	service := srv.UService{User: srv.ExampleData(), NextID: 5}
 
 	rspDeleteBooking := &user.BookingDeletedResult{}
 	_ = service.BookingDeleted(context.TODO(), &user.BookingDeletedRequest{UserID: 4, BookingID: 2}, rspDeleteBooking)

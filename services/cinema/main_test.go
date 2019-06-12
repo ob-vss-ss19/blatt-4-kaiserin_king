@@ -5,10 +5,11 @@ import (
 	"testing"
 
 	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
+	"github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv"
 )
 
 func TestCinemaGetList(t *testing.T) {
-	service := CService{cHall: make([]*cinema.CinemaHall, 0), nextID: 1}
+	service := srv.CService{CHall: make([]*cinema.CinemaHall, 0), NextID: 1}
 	rsp := &cinema.GetHallListResult{}
 	err := service.GetHallList(context.TODO(), &cinema.GetHallListRequest{}, rsp)
 
@@ -57,7 +58,7 @@ func TestCinemaGetList(t *testing.T) {
 }
 
 func TestCinemaDeleteWrongID(t *testing.T) {
-	service := CService{cHall: make([]*cinema.CinemaHall, 0), nextID: 1}
+	service := srv.CService{CHall: make([]*cinema.CinemaHall, 0), NextID: 1}
 
 	rspDelete := &cinema.DeleteHallResult{}
 	err := service.DeleteHall(context.TODO(), &cinema.DeleteHallRequest{Id: 42}, rspDelete)
@@ -73,7 +74,7 @@ func TestCinemaDeleteWrongID(t *testing.T) {
 }
 
 func TestAskForSeats(t *testing.T) {
-	service := CService{cHall: make([]*cinema.CinemaHall, 0), nextID: 1}
+	service := srv.CService{CHall: make([]*cinema.CinemaHall, 0), NextID: 1}
 
 	rspCreate := &cinema.CreateHallResult{}
 	_ = service.CreateHall(context.TODO(), &cinema.CreateHallRequest{Name: "Kino1", Rows: 10, Cols: 3}, rspCreate)
@@ -94,7 +95,7 @@ func TestAskForSeats(t *testing.T) {
 }
 
 func TestAskExist(t *testing.T) {
-	service := CService{cHall: make([]*cinema.CinemaHall, 0), nextID: 1}
+	service := srv.CService{CHall: make([]*cinema.CinemaHall, 0), NextID: 1}
 
 	rspCreate := &cinema.CreateHallResult{}
 	_ = service.CreateHall(context.TODO(), &cinema.CreateHallRequest{Name: "Kino1", Rows: 10, Cols: 3}, rspCreate)

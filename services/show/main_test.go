@@ -5,10 +5,11 @@ import (
 	"testing"
 
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
+	"github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/srv"
 )
 
 func TestShow(t *testing.T) {
-	service := SService{show: make([]*show.ShowData, 0), nextID: 1}
+	service := srv.SService{Show: make([]*show.ShowData, 0), NextID: 1}
 
 	rsp := &show.GetShowListResult{}
 	err := service.GetShowList(context.TODO(), &show.GetShowListRequest{}, rsp)
