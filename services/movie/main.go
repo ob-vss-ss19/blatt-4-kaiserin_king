@@ -15,7 +15,7 @@ import (
 type MService struct {
 	movie  []*movie.MovieData
 	nextID int32
-	mux          sync.Mutex
+	mux    sync.Mutex
 }
 
 //Function to create a new Movie, requested with a name for the movie.

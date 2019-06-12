@@ -282,7 +282,7 @@ func main() {
 	}
 }
 
-//Function which return exmaple Data of bookings which are added to the Service from the Beginning.
+//Function which return example Data of bookings which are added to the Service from the Beginning.
 func exampleData() []*booking.BookingData {
 	bookings := make([]*booking.BookingData, 0)
 	bookings = append(bookings, &booking.BookingData{Id: 1, UserID: 3, ShowID: 4, Seats: 2})

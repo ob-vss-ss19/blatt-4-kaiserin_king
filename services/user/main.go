@@ -13,7 +13,7 @@ import (
 type UService struct {
 	user   []*user.UserData
 	nextID int32
-	mux          sync.Mutex
+	mux    sync.Mutex
 }
 
 //Function that creats a new user, which is requested with a name.

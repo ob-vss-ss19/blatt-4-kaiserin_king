@@ -16,7 +16,7 @@ import (
 type CService struct {
 	cHall  []*cinema.CinemaHall
 	nextID int32
-	mux          sync.Mutex
+	mux    sync.Mutex
 }
 
 //Function to create a new Cinemahall by request with an name for the hall.

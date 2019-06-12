@@ -17,7 +17,7 @@ import (
 type SService struct {
 	show   []*show.ShowData
 	nextID int32
-	mux          sync.Mutex
+	mux    sync.Mutex
 }
 
 //Function that creats a new show requested with an HallId and MovieID.
