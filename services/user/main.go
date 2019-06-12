@@ -71,6 +71,17 @@ func (us *UService) GetUserList(ctx context.Context, req *user.GetUserListReques
 	return nil
 }
 
+func (us *UService) Exist(ctx context.Context, req *user.ExistRequest, rsp *user.ExistResult) error {
+	for _, u := range us.user {
+		if u.Id == req.Id {
+			rsp.Exist = true
+			return nil
+		}
+	}
+	rsp.Exist = false
+	return nil
+}
+
 func (us *UService) deleteNotConfirmed(userID int32, bookingID int32) bool {
 	for _, u := range us.user {
 		if u.Id == userID {

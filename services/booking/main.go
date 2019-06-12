@@ -24,13 +24,17 @@ func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookin
 	givenID := bs.nextID
 	bs.nextID++
 
-	if bs.checkSeats(req.ShowID) >= req.Seats {
-		bs.notConfirmed = append(bs.notConfirmed,
-			&booking.BookingData{UserID: req.UserID, ShowID: req.ShowID, Seats: req.Seats, Id: givenID})
-		rsp.Id = givenID
+	if bs.userExist(req.UserID) && bs.showExist(req.ShowID) {
+		if bs.checkSeats(req.ShowID) >= req.Seats {
+			bs.notConfirmed = append(bs.notConfirmed,
+				&booking.BookingData{UserID: req.UserID, ShowID: req.ShowID, Seats: req.Seats, Id: givenID})
+			rsp.Id = givenID
 
-		bs.sendUserBooking(req.UserID, givenID,false)
+			bs.sendUserBooking(req.UserID, givenID,false)
 
+			return nil
+		}
+		rsp.Id = -1
 		return nil
 	}
 
@@ -178,6 +182,49 @@ func (bs *BService) sendUserBooking(userID int32, bookingID int32, confirmed boo
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func (bs *BService) showExist(showID int32) bool {
+	var client client.Client
+	showC := show.NewShowService("go.micro.services.show", client)
+
+	rsp, err := showC.Exist(context.TODO(), &show.ExistRequest{Id: showID})
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return rsp.Exist
+}
+
+func (bs *BService) userExist(userID int32) bool {
+	var client client.Client
+	userC := user.NewUserService("go.micro.services.user", client)
+
+	rsp, err := userC.Exist(context.TODO(), &user.ExistRequest{Id: userID})
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return rsp.Exist
+}
+
+func (bs *BService) Exist(ctx context.Context, req *booking.ExistRequest, rsp *booking.ExistResult) error {
+	for _, b := range bs.booking {
+		if b.Id == req.Id {
+			rsp.Exist = true
+			return nil
+		}
+	}
+	for _, nc := range bs.notConfirmed {
+		if nc.Id == req.Id {
+			rsp.Exist = true
+			return nil
+		}
+	}
+	rsp.Exist = false
+	return nil
 }
 
 func main() {

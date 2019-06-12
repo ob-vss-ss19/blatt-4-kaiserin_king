@@ -6,6 +6,7 @@ import (
 	"github.com/micro/go-micro/client"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
+	movie "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/proto"
 	"log"
 
 	"github.com/micro/go-micro"
@@ -21,18 +22,20 @@ func (shs *SService) CreateShow(ctx context.Context, req *show.CreateShowRequest
 	givenID := shs.nextID
 	shs.nextID++
 
-	var client client.Client
-	cinemaC := cinema.NewCinemaService("go.micro.services.cinema", client)
+	if shs.movieExist(req.MovieID) && shs.hallExist(req.HallID) {
+		var client client.Client
+		cinemaC := cinema.NewCinemaService("go.micro.services.cinema", client)
 
-	resSeats, err := cinemaC.AskSeats(context.TODO(), &cinema.FreeSeatsRequest{HallID: req.HallID})
-	if err != nil {
-		fmt.Println(err)
+		resSeats, err := cinemaC.AskSeats(context.TODO(), &cinema.FreeSeatsRequest{HallID: req.HallID})
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		shs.show = append(shs.show,
+			&show.ShowData{HallID: req.HallID, MovieID: req.MovieID, Id: givenID, FreeSeats: resSeats.FreeSeats})
+		rsp.Id = givenID
 	}
-
-	shs.show = append(shs.show,
-		&show.ShowData{HallID: req.HallID, MovieID: req.MovieID, Id: givenID, FreeSeats: resSeats.FreeSeats})
-	rsp.Id = givenID
-
+	rsp.Id = -1
 	return nil
 }
 
@@ -99,6 +102,43 @@ func (shs *SService) UpdateSeats(ctx context.Context, req *show.UpdateSeatsReque
 
 func (shs *SService) GetShowList(ctx context.Context, req *show.GetShowListRequest, rsp *show.GetShowListResult) error {
 	rsp.Shows = shs.show
+	return nil
+}
+
+func (shs *SService) movieExist(movieID int32) bool {
+	var client client.Client
+	movieC := movie.NewMovieService("go.micro.services.movie", client)
+
+	rsp, err := movieC.Exist(context.TODO(), &movie.ExistRequest{Id: movieID})
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return rsp.Exist
+}
+
+func (shs *SService) hallExist(hallID int32) bool {
+	var client client.Client
+	cinemaC := cinema.NewCinemaService("go.micro.services.cinema", client)
+
+	rsp, err := cinemaC.Exist(context.TODO(), &cinema.ExistRequest{Id: hallID})
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return rsp.Exist
+}
+
+func (shs *SService) Exist(ctx context.Context, req *show.ExistRequest, rsp *show.ExistResult) error {
+	for _, s := range shs.show {
+		if s.Id == req.Id {
+			rsp.Exist = true
+			return nil
+		}
+	}
+	rsp.Exist = false
 	return nil
 }
 

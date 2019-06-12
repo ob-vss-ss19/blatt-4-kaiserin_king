@@ -51,6 +51,17 @@ func (ms *MService) GetMovieList(ctx context.Context, req *movie.GetMovieListReq
 	return nil
 }
 
+func (ms *MService) Exist(ctx context.Context, req *movie.ExistRequest, rsp *movie.ExistResult) error {
+	for _, m := range ms.movie {
+		if m.Id == req.Id {
+			rsp.Exist = true
+			return nil
+		}
+	}
+	rsp.Exist = false
+	return nil
+}
+
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.movie"),

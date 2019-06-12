@@ -65,6 +65,17 @@ func (cs *CService) GetHallList(ctx context.Context, req *cinema.GetHallListRequ
 	return nil
 }
 
+func (cs *CService) Exist(ctx context.Context, req *cinema.ExistRequest, rsp *cinema.ExistResult) error {
+	for _, c := range cs.cHall {
+		if c.Id == req.Id {
+			rsp.Exist = true
+			return nil
+		}
+	}
+	rsp.Exist = false
+	return nil
+}
+
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.cinema"),
