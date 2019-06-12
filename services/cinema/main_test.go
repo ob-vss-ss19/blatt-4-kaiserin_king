@@ -54,3 +54,19 @@ func TestCinemaGetList(t *testing.T) {
 		t.Errorf("Error %v\n", err)
 	}
 }
+
+func TestCinemaDeleteWrongID(t *testing.T) {
+	service := CService{cHall: make([]*cinema.CinemaHall, 0), nextID: 1}
+
+	rspDelete := &cinema.DeleteHallResult{}
+	err := service.DeleteHall(context.TODO(), &cinema.DeleteHallRequest{Id: 42}, rspDelete)
+
+	if err == nil {
+		if rspDelete.Successful {
+			t.Errorf("Expected failing delete!")
+		}
+	} else {
+		t.Errorf("Error %v\n", err)
+	}
+
+}
