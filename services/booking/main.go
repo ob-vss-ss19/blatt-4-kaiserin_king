@@ -4,20 +4,21 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+	"sync"
+
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
-	"log"
-	"sync"
 )
 
 type BService struct {
 	booking      []*booking.BookingData
 	notConfirmed []*booking.BookingData
 	nextID       int32
-	mux	sync.Mutex
+	mux          sync.Mutex
 }
 
 func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookingRequest, rsp *booking.CreateBookingResult) error {
@@ -30,7 +31,7 @@ func (bs *BService) CreateBooking(ctx context.Context, req *booking.CreateBookin
 				&booking.BookingData{UserID: req.UserID, ShowID: req.ShowID, Seats: req.Seats, Id: givenID})
 			rsp.Id = givenID
 
-			bs.sendUserBooking(req.UserID, givenID,false)
+			bs.sendUserBooking(req.UserID, givenID, false)
 
 			return nil
 		}

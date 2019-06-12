@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/micro/go-micro/client"
-	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 	"log"
 
 	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/client"
 	movie "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/proto"
+	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 )
 
 type MService struct {

@@ -2,14 +2,13 @@ package main
 
 import (
 	"context"
-	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 	"testing"
 
-
+	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 )
 
 func TestShow(t *testing.T) {
-	service := UService{user: make([]*user.UserData, 0)  , nextID: 1}
+	service := UService{user: make([]*user.UserData, 0), nextID: 1}
 
 	rsp := &user.GetUserListResult{}
 	err := service.GetUserList(context.TODO(), &user.GetUserListRequest{}, rsp)
@@ -92,7 +91,7 @@ func TestShowDeleting(t *testing.T) {
 	service := UService{user: exampleData(), nextID: 1}
 
 	rspDeleteBooking := &user.BookingDeletedResult{}
-	_ = service.BookingDeleted(context.TODO(), &user.BookingDeletedRequest{UserID: 4, BookingID:2}, rspDeleteBooking)
+	_ = service.BookingDeleted(context.TODO(), &user.BookingDeletedRequest{UserID: 4, BookingID: 2}, rspDeleteBooking)
 	if !service.CheckBookingOfUser(4) {
 		t.Error("Expected no bookings for id=4")
 	}
@@ -104,7 +103,7 @@ func TestShowDeleting(t *testing.T) {
 	}
 
 	rspMarkedB := &user.CreatedBookingResult{}
-	_ = service.CreatedMarkedBooking(context.TODO(), &user.CreatedBookingRequest{UserID: rspCreate.Id, BookingID: 200,}, rspMarkedB)
+	_ = service.CreatedMarkedBooking(context.TODO(), &user.CreatedBookingRequest{UserID: rspCreate.Id, BookingID: 200}, rspMarkedB)
 	if service.CheckBookingOfUser(rspCreate.Id) {
 		t.Errorf("Expected bookings for id=%v", rspCreate.Id)
 	}
@@ -122,13 +121,13 @@ func TestShowDeleting(t *testing.T) {
 	}
 
 	rspMarkedB = &user.CreatedBookingResult{}
-	_ = service.CreatedMarkedBooking(context.TODO(), &user.CreatedBookingRequest{UserID: rspCreate.Id, BookingID: 700,}, rspMarkedB)
+	_ = service.CreatedMarkedBooking(context.TODO(), &user.CreatedBookingRequest{UserID: rspCreate.Id, BookingID: 700}, rspMarkedB)
 	if service.CheckBookingOfUser(rspCreate.Id) {
 		t.Errorf("Expected bookings for id=%v", rspCreate.Id)
 	}
 
 	rspDeleteBooking = &user.BookingDeletedResult{}
-	_ = service.BookingDeleted(context.TODO(), &user.BookingDeletedRequest{UserID: rspCreate.Id, BookingID:700}, rspDeleteBooking)
+	_ = service.BookingDeleted(context.TODO(), &user.BookingDeletedRequest{UserID: rspCreate.Id, BookingID: 700}, rspDeleteBooking)
 	if service.CheckBookingOfUser(rspCreate.Id) {
 		t.Errorf("Expected bookings for id=%v", rspCreate.Id)
 	}

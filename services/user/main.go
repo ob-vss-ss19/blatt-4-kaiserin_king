@@ -130,7 +130,7 @@ func (us *UService) CheckBookingOfUser(userID int32) bool {
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.user"),
-		micro.Address(fmt.Sprintf(":%v",1036)),
+		micro.Address(fmt.Sprintf(":%v", 1036)),
 	)
 
 	service.Init()
@@ -144,7 +144,7 @@ func main() {
 func exampleData() []*user.UserData {
 	users := make([]*user.UserData, 0)
 	users = append(users, &user.UserData{Id: 1, Name: "Maxi King",
-		Bookings:[]int32{3}, NotConfirmed: make([]int32, 0)})
+		Bookings: []int32{3}, NotConfirmed: make([]int32, 0)})
 
 	users = append(users, &user.UserData{Id: 2, Name: "Kaiserin Sissy",
 		Bookings: []int32{4}, NotConfirmed: make([]int32, 0)})

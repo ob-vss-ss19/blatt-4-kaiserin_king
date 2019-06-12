@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
-	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
 	"testing"
+
+	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
 )
 
 func TestCinemaGetList(t *testing.T) {
@@ -32,7 +33,7 @@ func TestCinemaGetList(t *testing.T) {
 	}
 
 	rspDelete := &cinema.DeleteHallResult{}
-	service.DeleteHall(context.TODO(), &cinema.DeleteHallRequest{Id:rspCreate.Id}, rspDelete)
+	service.DeleteHall(context.TODO(), &cinema.DeleteHallRequest{Id: rspCreate.Id}, rspDelete)
 	err = service.GetHallList(context.TODO(), &cinema.GetHallListRequest{}, rsp)
 
 	if err == nil {
@@ -99,14 +100,14 @@ func TestAskExist(t *testing.T) {
 	service.CreateHall(context.TODO(), &cinema.CreateHallRequest{Name: "Kino1", Rows: 10, Cols: 3}, rspCreate)
 
 	rspExist := &cinema.ExistResult{}
-	service.Exist(context.TODO(), &cinema.ExistRequest{Id:rspCreate.Id}, rspExist)
+	service.Exist(context.TODO(), &cinema.ExistRequest{Id: rspCreate.Id}, rspExist)
 
 	if !rspExist.Exist {
 		t.Error("Expected existing hall")
 	}
 
 	rspExist = &cinema.ExistResult{}
-	service.Exist(context.TODO(), &cinema.ExistRequest{Id:200}, rspExist)
+	service.Exist(context.TODO(), &cinema.ExistRequest{Id: 200}, rspExist)
 
 	if rspExist.Exist {
 		t.Error("Expected not existing hall")

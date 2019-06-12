@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
+
+	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
 	movie "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/proto"
-	"log"
-
-	"github.com/micro/go-micro"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 )
 

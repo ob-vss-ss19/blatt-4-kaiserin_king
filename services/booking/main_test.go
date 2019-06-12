@@ -87,13 +87,13 @@ func TestBookingTwoConfirmed(t *testing.T) {
 		t.Errorf("Booking expected successful")
 	}
 
-	rspConfirm2:= &booking.ConfirmBookingResult{}
+	rspConfirm2 := &booking.ConfirmBookingResult{}
 	service.ConfirmBooking(context.TODO(), &booking.ConfirmBookingRequest{Id: rspCreate2.Id}, rspConfirm2)
 	if rspConfirm2.Successful {
 		t.Errorf("Booking 2 expected not successful")
 	}
 
-	rspConfirm3:= &booking.ConfirmBookingResult{}
+	rspConfirm3 := &booking.ConfirmBookingResult{}
 	service.ConfirmBooking(context.TODO(), &booking.ConfirmBookingRequest{Id: 42}, rspConfirm3)
 	if rspConfirm3.Successful {
 		t.Errorf("Booking 3 expected not successful")
@@ -111,7 +111,7 @@ func TestBookingDelete(t *testing.T) {
 	service.ConfirmBooking(context.TODO(), &booking.ConfirmBookingRequest{Id: rspCreate.Id}, rspConfirm)
 
 	rspDelete := &booking.DeleteBookingResult{}
-	service.DeleteBooking(context.TODO(), &booking.DeleteBookingRequest{Id:rspCreate.Id}, rspDelete)
+	service.DeleteBooking(context.TODO(), &booking.DeleteBookingRequest{Id: rspCreate.Id}, rspDelete)
 
 	err := service.GetBookingList(context.TODO(), &booking.GetListRequest{}, rsp)
 	if err == nil {
@@ -141,7 +141,7 @@ func TestBookingDelete(t *testing.T) {
 	service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 1, Seats: 1}, rspCreate)
 
 	rspDelete = &booking.DeleteBookingResult{}
-	service.DeleteBooking(context.TODO(), &booking.DeleteBookingRequest{Id:rspCreate.Id}, rspDelete)
+	service.DeleteBooking(context.TODO(), &booking.DeleteBookingRequest{Id: rspCreate.Id}, rspDelete)
 
 	err = service.GetBookingList(context.TODO(), &booking.GetListRequest{}, rsp)
 	if err == nil {
@@ -166,8 +166,8 @@ func TestBookingDelete(t *testing.T) {
 	}
 
 	rspDelete = &booking.DeleteBookingResult{}
-	service.DeleteBooking(context.TODO(), &booking.DeleteBookingRequest{Id:6000}, rspDelete)
-	if rspDelete.Successful{
+	service.DeleteBooking(context.TODO(), &booking.DeleteBookingRequest{Id: 6000}, rspDelete)
+	if rspDelete.Successful {
 		t.Error("Expected no booking with this ID!")
 	}
 

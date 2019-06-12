@@ -2,12 +2,13 @@ package main
 
 import (
 	"context"
-	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 	"testing"
+
+	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 )
 
 func TestShow(t *testing.T) {
-	service := SService{show: make([]*show.ShowData,0), nextID:1}
+	service := SService{show: make([]*show.ShowData, 0), nextID: 1}
 
 	rsp := &show.GetShowListResult{}
 	err := service.GetShowList(context.TODO(), &show.GetShowListRequest{}, rsp)
@@ -20,7 +21,7 @@ func TestShow(t *testing.T) {
 	}
 
 	rspCreate := &show.CreateShowResult{}
-	err = service.CreateShow(context.TODO(), &show.CreateShowRequest{MovieID: 1, HallID:1}, rspCreate)
+	err = service.CreateShow(context.TODO(), &show.CreateShowRequest{MovieID: 1, HallID: 1}, rspCreate)
 	if err == nil {
 		if rspCreate.Id == -1 {
 			t.Error("Expected successful creation")
@@ -30,7 +31,7 @@ func TestShow(t *testing.T) {
 	}
 
 	rspSeats := &show.FreeSeatsResult{}
-	service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID:rspCreate.Id}, rspSeats)
+	service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID: rspCreate.Id}, rspSeats)
 	if rspSeats.FreeSeats != 35 {
 		t.Errorf("Expected 35 free seats but got %v", rspSeats.FreeSeats)
 	}
@@ -48,7 +49,7 @@ func TestShow(t *testing.T) {
 	}
 
 	rspSeats = &show.FreeSeatsResult{}
-	service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID:rspCreate.Id}, rspSeats)
+	service.AskSeats(context.TODO(), &show.FreeSeatsRequest{ShowID: rspCreate.Id}, rspSeats)
 	if rspSeats.FreeSeats != 30 {
 		t.Errorf("Expected 30 free seats but got %v", rspSeats.FreeSeats)
 	}
@@ -60,7 +61,7 @@ func TestShow(t *testing.T) {
 	}
 
 	rspCreate2 := &show.CreateShowResult{}
-	err = service.CreateShow(context.TODO(), &show.CreateShowRequest{MovieID: 200, HallID:200}, rspCreate2)
+	err = service.CreateShow(context.TODO(), &show.CreateShowRequest{MovieID: 200, HallID: 200}, rspCreate2)
 	if err == nil {
 		if rspCreate2.Id != -1 {
 			t.Error("Expected failing creation")
@@ -110,7 +111,7 @@ func TestShow(t *testing.T) {
 	}
 
 	rspCreate = &show.CreateShowResult{}
-	_ = service.CreateShow(context.TODO(), &show.CreateShowRequest{MovieID: 1, HallID:1}, rspCreate)
+	_ = service.CreateShow(context.TODO(), &show.CreateShowRequest{MovieID: 1, HallID: 1}, rspCreate)
 
 	rspDeleteHall := &show.DeleteShowOfHallResult{}
 	_ = service.FromHallDelete(context.TODO(), &show.DeleteShowOfHallRequest{HallID: 1}, rspDeleteHall)
@@ -125,10 +126,10 @@ func TestShow(t *testing.T) {
 	}
 
 	rspCreate = &show.CreateShowResult{}
-	_ = service.CreateShow(context.TODO(), &show.CreateShowRequest{MovieID: 1, HallID:1}, rspCreate)
+	_ = service.CreateShow(context.TODO(), &show.CreateShowRequest{MovieID: 1, HallID: 1}, rspCreate)
 
 	rspExist := &show.ExistResult{}
-	_ = service.Exist(context.TODO(), &show.ExistRequest{Id:rspCreate.Id}, rspExist)
+	_ = service.Exist(context.TODO(), &show.ExistRequest{Id: rspCreate.Id}, rspExist)
 	if !rspExist.Exist {
 		t.Error("Expected that show exists")
 	}
@@ -146,7 +147,7 @@ func TestShow(t *testing.T) {
 	}
 
 	rspExist = &show.ExistResult{}
-	_ = service.Exist(context.TODO(), &show.ExistRequest{Id:rspCreate.Id}, rspExist)
+	_ = service.Exist(context.TODO(), &show.ExistRequest{Id: rspCreate.Id}, rspExist)
 	if rspExist.Exist {
 		t.Error("Expected that show does not exists")
 	}
