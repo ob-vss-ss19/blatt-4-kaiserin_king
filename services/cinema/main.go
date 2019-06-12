@@ -68,6 +68,7 @@ func (cs *CService) GetHallList(ctx context.Context, req *cinema.GetHallListRequ
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.cinema"),
+		micro.Address(fmt.Sprintf(":%v", 1033)),
 	)
 
 	service.Init()

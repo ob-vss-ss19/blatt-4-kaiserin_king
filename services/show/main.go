@@ -117,6 +117,7 @@ func (shs *SService) delete(index int, showID int32) {
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.show"),
+		micro.Address(fmt.Sprintf(":%v", 1035)),
 	)
 
 	service.Init()

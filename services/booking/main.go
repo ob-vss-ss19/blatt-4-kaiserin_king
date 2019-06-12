@@ -87,10 +87,6 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 	return nil
 }
 
-func (bs *BService) AskBookingOfUser(ctx context.Context, req *booking.AskBookingOfUserRequest, rsp *booking.AskBookingOfUserResult) error {
-	return nil
-}
-
 func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDeleteRequest, rsp *booking.FromShowDeleteResult) error {
 	success := false
 
@@ -187,6 +183,7 @@ func (bs *BService) sendUserBooking(userID int32, bookingID int32, confirmed boo
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.booking"),
+		micro.Address(fmt.Sprintf(":%v", 1032)),
 	)
 
 	service.Init()

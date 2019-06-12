@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	"testing"
+
+	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 )
 
 func TestBookingGetList(t *testing.T) {
@@ -169,4 +170,5 @@ func TestBookingDelete(t *testing.T) {
 	if rspDelete.Successful{
 		t.Error("Expected no booking with this ID!")
 	}
+
 }

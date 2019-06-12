@@ -54,6 +54,7 @@ func (ms *MService) GetMovieList(ctx context.Context, req *movie.GetMovieListReq
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.movie"),
+		micro.Address(fmt.Sprintf(":%v", 1034)),
 	)
 
 	service.Init()

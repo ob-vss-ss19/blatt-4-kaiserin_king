@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/micro/go-micro"
@@ -118,6 +119,7 @@ func (us *UService) CheckBookingOfUser(userID int32) bool {
 func main() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.user"),
+		micro.Address(fmt.Sprintf(":%v",1036)),
 	)
 
 	service.Init()
