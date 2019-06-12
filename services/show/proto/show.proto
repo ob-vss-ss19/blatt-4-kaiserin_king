@@ -5,6 +5,12 @@ package show;
 service Show {
     rpc DeleteShow(DeleteShowRequest) returns (DeleteShowResult) {}
     rpc CreateShow(CreateShowRequest) returns (CreateShowResult) {}
+    rpc FromHallDelete(DeleteShowOfHallRequest) returns (DeleteShowOfHallResult) {}
+    rpc FromMovieDelete(DeleteShowOfMovieRequest) returns (DeleteShowOfMovieResult) {}
+    rpc AskSeats(FreeSeatsRequest) returns (FreeSeatsResult) {}
+    rpc UpdateSeats(UpdateSeatsRequest) returns (UpdateSeatsResult) {}
+    rpc GetShowList(GetShowListRequest) returns (GetShowListResult) {}
+    rpc Exist(ExistRequest) returns (ExistResult) {}
 }
 
 message DeleteShowRequest {
@@ -20,12 +26,60 @@ message CreateShowRequest {
     int32 hallID = 2;
 }
 
+message DeleteShowOfHallRequest {
+    int32 hallID = 1;
+}
+
+message DeleteShowOfHallResult {
+    bool successful = 1;
+}
+
+message DeleteShowOfMovieRequest {
+    int32 movieID = 1;
+}
+
+message DeleteShowOfMovieResult {
+    bool successful = 1;
+}
+
 message CreateShowResult {
     int32 id = 1;
+}
+
+message FreeSeatsRequest {
+    int32 ShowID = 1;
+}
+
+message FreeSeatsResult {
+    int32 freeSeats = 1;
+}
+
+message UpdateSeatsRequest {
+    int32 ShowID = 1;
+    int32 amountSeats = 2;
+}
+
+message UpdateSeatsResult {
+    bool success = 1;
+}
+
+message GetShowListRequest {}
+
+message GetShowListResult {
+    repeated ShowData shows = 1;
+}
+
+message ExistRequest {
+    int32 id = 1;
+}
+
+message ExistResult {
+    bool exist = 1;
 }
 
 message ShowData {
     int32 id = 1;
     int32 movieID = 2;
     int32 hallID = 3;
+    int32 freeSeats = 4;
 }

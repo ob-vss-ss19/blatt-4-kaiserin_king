@@ -37,6 +37,10 @@ type BookingService interface {
 	DeleteBooking(ctx context.Context, in *DeleteBookingRequest, opts ...client.CallOption) (*DeleteBookingResult, error)
 	CreateBooking(ctx context.Context, in *CreateBookingRequest, opts ...client.CallOption) (*CreateBookingResult, error)
 	ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, opts ...client.CallOption) (*ConfirmBookingResult, error)
+	FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, opts ...client.CallOption) (*FromShowDeleteResult, error)
+	GetBookingList(ctx context.Context, in *GetListRequest, opts ...client.CallOption) (*GetListResult, error)
+	GetNotConfirmedList(ctx context.Context, in *GetListRequest, opts ...client.CallOption) (*GetListResult, error)
+	Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error)
 }
 
 type bookingService struct {
@@ -87,12 +91,56 @@ func (c *bookingService) ConfirmBooking(ctx context.Context, in *ConfirmBookingR
 	return out, nil
 }
 
+func (c *bookingService) FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, opts ...client.CallOption) (*FromShowDeleteResult, error) {
+	req := c.c.NewRequest(c.name, "Booking.FromShowDelete", in)
+	out := new(FromShowDeleteResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bookingService) GetBookingList(ctx context.Context, in *GetListRequest, opts ...client.CallOption) (*GetListResult, error) {
+	req := c.c.NewRequest(c.name, "Booking.GetBookingList", in)
+	out := new(GetListResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bookingService) GetNotConfirmedList(ctx context.Context, in *GetListRequest, opts ...client.CallOption) (*GetListResult, error) {
+	req := c.c.NewRequest(c.name, "Booking.GetNotConfirmedList", in)
+	out := new(GetListResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *bookingService) Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error) {
+	req := c.c.NewRequest(c.name, "Booking.Exist", in)
+	out := new(ExistResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Booking service
 
 type BookingHandler interface {
 	DeleteBooking(context.Context, *DeleteBookingRequest, *DeleteBookingResult) error
 	CreateBooking(context.Context, *CreateBookingRequest, *CreateBookingResult) error
 	ConfirmBooking(context.Context, *ConfirmBookingRequest, *ConfirmBookingResult) error
+	FromShowDelete(context.Context, *FromShowDeleteRequest, *FromShowDeleteResult) error
+	GetBookingList(context.Context, *GetListRequest, *GetListResult) error
+	GetNotConfirmedList(context.Context, *GetListRequest, *GetListResult) error
+	Exist(context.Context, *ExistRequest, *ExistResult) error
 }
 
 func RegisterBookingHandler(s server.Server, hdlr BookingHandler, opts ...server.HandlerOption) error {
@@ -100,6 +148,10 @@ func RegisterBookingHandler(s server.Server, hdlr BookingHandler, opts ...server
 		DeleteBooking(ctx context.Context, in *DeleteBookingRequest, out *DeleteBookingResult) error
 		CreateBooking(ctx context.Context, in *CreateBookingRequest, out *CreateBookingResult) error
 		ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, out *ConfirmBookingResult) error
+		FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, out *FromShowDeleteResult) error
+		GetBookingList(ctx context.Context, in *GetListRequest, out *GetListResult) error
+		GetNotConfirmedList(ctx context.Context, in *GetListRequest, out *GetListResult) error
+		Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error
 	}
 	type Booking struct {
 		booking
@@ -122,4 +174,20 @@ func (h *bookingHandler) CreateBooking(ctx context.Context, in *CreateBookingReq
 
 func (h *bookingHandler) ConfirmBooking(ctx context.Context, in *ConfirmBookingRequest, out *ConfirmBookingResult) error {
 	return h.BookingHandler.ConfirmBooking(ctx, in, out)
+}
+
+func (h *bookingHandler) FromShowDelete(ctx context.Context, in *FromShowDeleteRequest, out *FromShowDeleteResult) error {
+	return h.BookingHandler.FromShowDelete(ctx, in, out)
+}
+
+func (h *bookingHandler) GetBookingList(ctx context.Context, in *GetListRequest, out *GetListResult) error {
+	return h.BookingHandler.GetBookingList(ctx, in, out)
+}
+
+func (h *bookingHandler) GetNotConfirmedList(ctx context.Context, in *GetListRequest, out *GetListResult) error {
+	return h.BookingHandler.GetNotConfirmedList(ctx, in, out)
+}
+
+func (h *bookingHandler) Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error {
+	return h.BookingHandler.Exist(ctx, in, out)
 }

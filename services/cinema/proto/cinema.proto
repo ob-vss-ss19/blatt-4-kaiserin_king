@@ -3,9 +3,11 @@ syntax = "proto3";
 package cinema;
 
 service Cinema {
-    rpc CreateHall(CreateHallRequest) returns (CreateHallResult);
-    rpc DeleteHall(DeleteHallRequest) returns (DeleteHallResult);
-    rpc GetHallList(GetHallListRequest) returns (GetHallListResult);
+    rpc CreateHall(CreateHallRequest) returns (CreateHallResult) {}
+    rpc DeleteHall(DeleteHallRequest) returns (DeleteHallResult) {}
+    rpc GetHallList(GetHallListRequest) returns (GetHallListResult) {}
+    rpc AskSeats(FreeSeatsRequest) returns (FreeSeatsResult) {}
+    rpc Exist(ExistRequest) returns (ExistResult) {}
 }
 
 message CreateHallRequest {
@@ -30,9 +32,26 @@ message GetHallListRequest {
 
 }
 
+message FreeSeatsRequest {
+    int32 HallID = 1;
+}
+
+message FreeSeatsResult {
+    int32 freeSeats = 1;
+}
+
 message GetHallListResult {
     repeated CinemaHall cHall = 1;
 }
+
+message ExistRequest {
+    int32 id = 1;
+}
+
+message ExistResult {
+    bool exist = 1;
+}
+
 
 message CinemaHall {
     int32 id = 1;

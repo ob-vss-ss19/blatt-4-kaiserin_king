@@ -37,6 +37,8 @@ type CinemaService interface {
 	CreateHall(ctx context.Context, in *CreateHallRequest, opts ...client.CallOption) (*CreateHallResult, error)
 	DeleteHall(ctx context.Context, in *DeleteHallRequest, opts ...client.CallOption) (*DeleteHallResult, error)
 	GetHallList(ctx context.Context, in *GetHallListRequest, opts ...client.CallOption) (*GetHallListResult, error)
+	AskSeats(ctx context.Context, in *FreeSeatsRequest, opts ...client.CallOption) (*FreeSeatsResult, error)
+	Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error)
 }
 
 type cinemaService struct {
@@ -87,12 +89,34 @@ func (c *cinemaService) GetHallList(ctx context.Context, in *GetHallListRequest,
 	return out, nil
 }
 
+func (c *cinemaService) AskSeats(ctx context.Context, in *FreeSeatsRequest, opts ...client.CallOption) (*FreeSeatsResult, error) {
+	req := c.c.NewRequest(c.name, "Cinema.AskSeats", in)
+	out := new(FreeSeatsResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cinemaService) Exist(ctx context.Context, in *ExistRequest, opts ...client.CallOption) (*ExistResult, error) {
+	req := c.c.NewRequest(c.name, "Cinema.Exist", in)
+	out := new(ExistResult)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Cinema service
 
 type CinemaHandler interface {
 	CreateHall(context.Context, *CreateHallRequest, *CreateHallResult) error
 	DeleteHall(context.Context, *DeleteHallRequest, *DeleteHallResult) error
 	GetHallList(context.Context, *GetHallListRequest, *GetHallListResult) error
+	AskSeats(context.Context, *FreeSeatsRequest, *FreeSeatsResult) error
+	Exist(context.Context, *ExistRequest, *ExistResult) error
 }
 
 func RegisterCinemaHandler(s server.Server, hdlr CinemaHandler, opts ...server.HandlerOption) error {
@@ -100,6 +124,8 @@ func RegisterCinemaHandler(s server.Server, hdlr CinemaHandler, opts ...server.H
 		CreateHall(ctx context.Context, in *CreateHallRequest, out *CreateHallResult) error
 		DeleteHall(ctx context.Context, in *DeleteHallRequest, out *DeleteHallResult) error
 		GetHallList(ctx context.Context, in *GetHallListRequest, out *GetHallListResult) error
+		AskSeats(ctx context.Context, in *FreeSeatsRequest, out *FreeSeatsResult) error
+		Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error
 	}
 	type Cinema struct {
 		cinema
@@ -122,4 +148,12 @@ func (h *cinemaHandler) DeleteHall(ctx context.Context, in *DeleteHallRequest, o
 
 func (h *cinemaHandler) GetHallList(ctx context.Context, in *GetHallListRequest, out *GetHallListResult) error {
 	return h.CinemaHandler.GetHallList(ctx, in, out)
+}
+
+func (h *cinemaHandler) AskSeats(ctx context.Context, in *FreeSeatsRequest, out *FreeSeatsResult) error {
+	return h.CinemaHandler.AskSeats(ctx, in, out)
+}
+
+func (h *cinemaHandler) Exist(ctx context.Context, in *ExistRequest, out *ExistResult) error {
+	return h.CinemaHandler.Exist(ctx, in, out)
 }
