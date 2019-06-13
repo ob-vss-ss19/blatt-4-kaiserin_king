@@ -204,7 +204,7 @@ func RunService() {
 	}
 }
 
-//Example Data of show which is added to Service from Beginn
+//Example Data of show which is added to Service from Beginning
 func ExampleData() []*show.ShowData {
 	shows := make([]*show.ShowData, 0)
 	shows = append(shows, &show.ShowData{Id: 1, MovieID: 1, HallID: 2, FreeSeats: 482})
