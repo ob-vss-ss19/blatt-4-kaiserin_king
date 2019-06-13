@@ -24,10 +24,12 @@ func TestBookingGetList(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunUserService(ctx, true)
-
 	time.Sleep(time.Second * 3)
 
 	service := BService{Booking: make([]*booking.BookingData, 0),
@@ -90,10 +92,12 @@ func TestBookingTooMuchSeats(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunUserService(ctx, true)
-
 	time.Sleep(time.Second * 3)
 
 	service := BService{Booking: make([]*booking.BookingData, 0),
@@ -116,10 +120,12 @@ func TestBookingTwoConfirmed(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunUserService(ctx, true)
-
 	time.Sleep(time.Second * 3)
 
 	service := BService{Booking: make([]*booking.BookingData, 0),
@@ -161,10 +167,12 @@ func TestBookingDelete(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunUserService(ctx, true)
-
 	time.Sleep(time.Second * 3)
 
 	service := BService{Booking: make([]*booking.BookingData, 0),
@@ -246,10 +254,12 @@ func TestCreateWrongID(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunUserService(ctx, true)
-
 	time.Sleep(time.Second * 3)
 
 	service := BService{Booking: make([]*booking.BookingData, 0),
@@ -287,10 +297,12 @@ func TestFromShowDelete(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunUserService(ctx, true)
-
 	time.Sleep(time.Second * 3)
 
 	service := BService{Booking: make([]*booking.BookingData, 0),
@@ -370,10 +382,12 @@ func TestExist(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
 	go RunUserService(ctx, true)
-
 	time.Sleep(time.Second * 3)
 
 	service := BService{Booking: make([]*booking.BookingData, 0),

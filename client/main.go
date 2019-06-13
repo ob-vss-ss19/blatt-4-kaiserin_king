@@ -60,13 +60,13 @@ func main() {
 	fmt.Println("----------------")
 	fmt.Println("----------------")
 
-	//rspCD, err := cinemaC.DeleteHall(context.TODO(), &cinema.DeleteHallRequest{Id:1})
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//fmt.Printf("Delete was: %v \n\n", rspCD.Successful)
+	rspCD, err := cinemaC.DeleteHall(context.TODO(), &cinema.DeleteHallRequest{Id: 1})
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("Delete was: %v \n\n", rspCD.Successful)
 
-	rspBTNC1, err := bookingC.CreateBooking(context.TODO(),
+	/*rspBTNC1, err := bookingC.CreateBooking(context.TODO(),
 		&booking.CreateBookingRequest{UserID: 2, ShowID: 2, Seats: 20})
 	if err != nil {
 		fmt.Println(err)
@@ -102,9 +102,9 @@ func main() {
 	fmt.Printf("List of all users: %v \n\n", rspU.Users)
 
 	fmt.Println("----------------")
-	fmt.Println("----------------")
+	fmt.Println("----------------")*/
 
-	rspBTC1, err := bookingC.ConfirmBooking(context.TODO(), &booking.ConfirmBookingRequest{Id: rspBTNC1.Id})
+	/*rspBTC1, err := bookingC.ConfirmBooking(context.TODO(), &booking.ConfirmBookingRequest{Id: rspBTNC1.Id})
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -117,7 +117,7 @@ func main() {
 	fmt.Printf("Confirmed second was: %v \n\n", rspBTC2.Successful)
 
 	fmt.Println("----------------")
-	fmt.Println("----------------")
+	fmt.Println("----------------")*/
 
 	rspS, err = showC.GetShowList(context.TODO(), &show.GetShowListRequest{})
 	if err != nil {

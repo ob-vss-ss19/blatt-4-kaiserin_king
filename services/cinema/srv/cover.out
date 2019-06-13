@@ -1,0 +1,22 @@
+mode: set
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:23.120,33.2 7 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:37.120,39.29 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:57.2,58.12 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:39.29,40.21 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:40.21,47.18 5 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:51.4,54.14 4 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:47.18,49.5 1 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:62.116,63.29 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:69.2,70.12 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:63.29,64.25 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:64.25,67.4 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:75.39,78.2 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:81.105,82.29 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:88.2,89.12 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:82.29,83.21 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:83.21,86.4 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:92.19,101.16 4 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:104.2,105.14 2 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:101.16,103.3 1 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:105.14,107.3 1 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv/cinema.go:111.41,116.2 4 0

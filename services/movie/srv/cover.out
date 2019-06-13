@@ -1,0 +1,18 @@
+mode: set
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:24.38,33.2 7 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:38.38,44.16 4 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:48.2,48.29 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:57.2,58.12 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:44.16,46.3 1 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:48.29,49.21 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:49.21,55.4 5 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:63.39,66.2 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:69.103,70.29 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:76.2,77.12 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:70.29,71.21 1 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:71.21,74.4 2 1
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:80.19,89.16 4 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:92.2,93.14 2 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:89.16,91.3 1 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:93.14,95.3 1 0
+github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv/movie.go:99.39,106.2 6 0

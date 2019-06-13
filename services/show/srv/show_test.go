@@ -1,15 +1,37 @@
-package main
+package srv
 
 import (
 	"context"
+	"fmt"
+	"log"
+	"math/rand"
 	"testing"
+	"time"
 
+	"github.com/micro/go-micro"
+	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
+	bs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/srv"
+	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
+	cs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv"
+	movie "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/proto"
+	ms "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
-	"github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/srv"
+	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
+	us "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/srv"
 )
 
 func TestShow(t *testing.T) {
-	service := srv.SService{Show: make([]*show.ShowData, 0), NextID: 1}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunBookingService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunUserService(ctx, true)
+	time.Sleep(time.Second * 3)
+	service := SService{Show: make([]*show.ShowData, 0), NextID: 1}
 
 	rsp := &show.GetShowListResult{}
 	err := service.GetShowList(context.TODO(), &show.GetShowListRequest{}, rsp)
@@ -153,4 +175,117 @@ func TestShow(t *testing.T) {
 		t.Error("Expected that show does not exists")
 	}
 
+	cancel()
+}
+
+func RunBookingService(ctx context.Context, test bool) {
+	port := 0
+	if test {
+		rand.Seed(time.Now().UTC().UnixNano())
+		port = 1024 + rand.Intn(1000) + 8
+	}
+
+	service := micro.NewService(
+		micro.Name("go.micro.services.booking"),
+		micro.Address(fmt.Sprintf(":%v", port)),
+	)
+
+	if !test {
+		service.Init()
+	}
+
+	err := booking.RegisterBookingHandler(service.Server(),
+		&bs.BService{Booking: bs.ExampleData(),
+			NotConfirmed: make([]*booking.BookingData, 0),
+			NextID:       5})
+	if err != nil {
+		fmt.Println(err)
+	}
+	r := service.Run()
+	if r != nil {
+		log.Fatalf("Running service failed! %v\n", r.Error())
+	}
+
+}
+
+func RunUserService(ctx context.Context, test bool) {
+	port := 0
+	if test {
+		rand.Seed(time.Now().UTC().UnixNano())
+		port = 1024 + rand.Intn(1000) + 8
+	}
+
+	service := micro.NewService(
+		micro.Name("go.micro.services.user"),
+		micro.Address(fmt.Sprintf(":%v", port)),
+		micro.Context(ctx),
+	)
+
+	if !test {
+		service.Init()
+	}
+
+	err := user.RegisterUserHandler(service.Server(), &us.UService{User: us.ExampleData(), NextID: 5})
+	if err != nil {
+		fmt.Println(err)
+	}
+	r := service.Run()
+	if r != nil {
+		log.Fatalf("Running service failed! %v\n", r.Error())
+	}
+
+}
+
+func RunCinemaService(ctx context.Context, test bool) {
+	port := 0
+	if test {
+		rand.Seed(time.Now().UTC().UnixNano())
+		port = 1024 + rand.Intn(1000) + 8
+	}
+
+	service := micro.NewService(
+		micro.Name("go.micro.services.cinema"),
+		micro.Address(fmt.Sprintf(":%v", port)),
+		micro.Context(ctx),
+	)
+
+	if !test {
+		service.Init()
+	}
+
+	err := cinema.RegisterCinemaHandler(service.Server(), &cs.CService{CHall: cs.ExampleData(), NextID: 3})
+	if err != nil {
+		fmt.Println(err)
+	}
+	r := service.Run()
+	if r != nil {
+		log.Fatalf("Running service failed! %v\n", r.Error())
+	}
+}
+
+func RunMovieService(ctx context.Context, test bool) {
+	port := 0
+	if test {
+		rand.Seed(time.Now().UTC().UnixNano())
+		port = 1024 + rand.Intn(1000) + 8
+	}
+
+	service := micro.NewService(
+		micro.Name("go.micro.services.movie"),
+		micro.Address(fmt.Sprintf(":%v", port)),
+		micro.Context(ctx),
+	)
+
+	if !test {
+		service.Init()
+	}
+
+	err := movie.RegisterMovieHandler(service.Server(), &ms.MService{Movie: ms.ExampleData(), NextID: 5})
+	if err != nil {
+		fmt.Println(err)
+	}
+	r := service.Run()
+	if r != nil {
+		log.Fatalf("Running service failed! %v\n", r.Error())
+	}
 }
