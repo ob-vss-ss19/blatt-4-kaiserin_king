@@ -4,20 +4,11 @@ import (
 	"context"
 	"testing"
 
-	bs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/srv"
-	cs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv"
-	ms "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv"
-	shs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/srv"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 	"github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/srv"
 )
 
 func TestUser(t *testing.T) {
-	cs.RunService()
-	ms.RunService()
-	shs.RunService()
-	bs.RunService()
-
 	service := srv.UService{User: make([]*user.UserData, 0), NextID: 1}
 
 	rsp := &user.GetUserListResult{}

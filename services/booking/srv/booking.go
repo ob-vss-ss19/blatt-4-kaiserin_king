@@ -3,14 +3,13 @@ package srv
 import (
 	"context"
 	"fmt"
-	"log"
-	"sync"
-
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
+	"log"
+	"sync"
 )
 
 //Struct for a bookingservice
@@ -109,23 +108,26 @@ func (bs *BService) ConfirmBooking(ctx context.Context, req *booking.ConfirmBook
 func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDeleteRequest,
 	rsp *booking.FromShowDeleteResult) error {
 	success := false
-
+	counter := 0
 	// delete show with id -> delete bookings
 	for i, b := range bs.Booking {
 		if b.ShowID == req.Id {
 			//bs.booking = append(bs.booking[:i], bs.booking[i+1:]...)
 			bs.Mux.Lock()
-			bs.deleteFromBooking(i, b.UserID, b.Id)
+			bs.deleteFromBooking(i - counter, b.UserID, b.Id)
 			bs.Mux.Unlock()
+			counter++
 			success = true
 		}
 	}
+	counter = 0
 	for i, b := range bs.NotConfirmed {
 		if b.ShowID == req.Id {
 			//bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
 			bs.Mux.Lock()
-			bs.deleteFromNotConfirmed(i, b.UserID, b.Id)
+			bs.deleteFromNotConfirmed(i - counter, b.UserID, b.Id)
 			bs.Mux.Unlock()
+			counter++
 			success = true
 		}
 	}
@@ -262,13 +264,17 @@ func (bs *BService) Exist(ctx context.Context, req *booking.ExistRequest, rsp *b
 	return nil
 }
 
-func RunService() {
+func RunService(ctx context.Context, test bool) {
 	service := micro.NewService(
 		micro.Name("go.micro.services.booking"),
-		micro.Address(fmt.Sprintf(":%v", 1032)),
+		micro.Address(fmt.Sprintf(":%v", 1034)),
+		micro.Context(ctx),
 	)
 
-	service.Init()
+	if !test {
+		service.Init()
+	}
+
 	err := booking.RegisterBookingHandler(service.Server(),
 		&BService{Booking: ExampleData(),
 			NotConfirmed: make([]*booking.BookingData, 0),

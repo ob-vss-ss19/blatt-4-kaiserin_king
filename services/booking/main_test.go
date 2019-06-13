@@ -7,18 +7,9 @@ import (
 
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	"github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/srv"
-	cs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv"
-	ms "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv"
-	shs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/srv"
-	us "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/srv"
 )
 
 func TestBookingGetList(t *testing.T) {
-	cs.RunService()
-	ms.RunService()
-	shs.RunService()
-	us.RunService()
-
 	service := srv.BService{Booking: make([]*booking.BookingData, 0),
 		NotConfirmed: make([]*booking.BookingData, 0),
 		NextID:       1}
@@ -194,7 +185,6 @@ func TestBookingDelete(t *testing.T) {
 	if rspDelete.Successful {
 		t.Error("Expected no booking with this ID!")
 	}
-
 }
 
 func TestCreateWrongID(t *testing.T) {
@@ -333,5 +323,4 @@ func TestExist(t *testing.T) {
 	if rspExist.Exist {
 		t.Error("Expected that booking not exists")
 	}
-
 }

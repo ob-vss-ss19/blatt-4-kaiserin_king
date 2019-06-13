@@ -3,15 +3,14 @@ package srv
 import (
 	"context"
 	"fmt"
-	"log"
-	"sync"
-
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
 	movie "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/proto"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
+	"log"
+	"sync"
 )
 
 type SService struct {
@@ -66,12 +65,14 @@ func (shs *SService) DeleteShow(ctx context.Context, req *show.DeleteShowRequest
 func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfHallRequest,
 	rsp *show.DeleteShowOfHallResult) error {
 	success := false
+	counter := 0
 	//Got the Id of an Hall which no longer exists
 	for i, v := range shs.Show {
 		if v.HallID == req.HallID {
 			shs.mux.Lock()
-			shs.delete(i, v.Id)
+			shs.delete(i - counter, v.Id)
 			shs.mux.Unlock()
+			counter++
 			success = true
 		}
 	}
@@ -84,12 +85,14 @@ func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfH
 func (shs *SService) FromMovieDelete(ctx context.Context, req *show.DeleteShowOfMovieRequest,
 	rsp *show.DeleteShowOfMovieResult) error {
 	success := false
+	counter := 0
 	//Got the Id of an Hall which no longer exists
 	for i, v := range shs.Show {
 		if v.MovieID == req.MovieID {
 			shs.mux.Lock()
-			shs.delete(i, v.Id)
+			shs.delete(i - counter, v.Id)
 			shs.mux.Unlock()
+			counter++
 			success = true
 		}
 	}
@@ -183,13 +186,17 @@ func (shs *SService) delete(index int, showID int32) {
 	}
 }
 
-func RunService() {
+func RunService(ctx context.Context, test bool) {
 	service := micro.NewService(
 		micro.Name("go.micro.services.show"),
-		micro.Address(fmt.Sprintf(":%v", 1035)),
+		micro.Address(fmt.Sprintf(":%v", 1033)),
+		micro.Context(ctx),
 	)
 
-	service.Init()
+	if !test {
+		service.Init()
+	}
+
 	err := show.RegisterShowHandler(service.Server(), &SService{Show: ExampleData(), NextID: 5})
 	if err != nil {
 		fmt.Println(err)

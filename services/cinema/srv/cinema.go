@@ -3,13 +3,12 @@ package srv
 import (
 	"context"
 	"fmt"
-	"log"
-	"sync"
-
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
 	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
+	"log"
+	"sync"
 )
 
 type CService struct {
@@ -89,13 +88,17 @@ func (cs *CService) Exist(ctx context.Context, req *cinema.ExistRequest, rsp *ci
 	return nil
 }
 
-func RunService() {
+func RunService(ctx context.Context, test bool) {
 	service := micro.NewService(
 		micro.Name("go.micro.services.cinema"),
-		micro.Address(fmt.Sprintf(":%v", 1033)),
+		micro.Address(fmt.Sprintf(":%v", 1036)),
+		micro.Context(ctx),
 	)
 
-	service.Init()
+	if !test {
+		service.Init()
+	}
+
 	err := cinema.RegisterCinemaHandler(service.Server(), &CService{CHall: ExampleData(), NextID: 3})
 	if err != nil {
 		fmt.Println(err)
