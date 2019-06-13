@@ -1,17 +1,40 @@
-package main
+package srv
 
 import (
 	"context"
 	"fmt"
+	"log"
+	"math/rand"
 	"testing"
+	"time"
 
+	"github.com/micro/go-micro"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
+	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
+	cs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/srv"
+	movie "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/proto"
+	ms "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/srv"
+	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
+	shs "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/srv"
+	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
+	us "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/srv"
 )
 
 func TestBookingGetList(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0),
-		notConfirmed: make([]*booking.BookingData, 0),
-		nextID:       1}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunUserService(ctx, true)
+	time.Sleep(time.Second * 3)
+
+	service := BService{Booking: make([]*booking.BookingData, 0),
+		NotConfirmed: make([]*booking.BookingData, 0),
+		NextID:       1}
 	rsp := &booking.GetListResult{}
 	err := service.GetBookingList(context.TODO(), &booking.GetListRequest{}, rsp)
 	if err == nil {
@@ -61,12 +84,25 @@ func TestBookingGetList(t *testing.T) {
 	} else {
 		t.Errorf("Error for List Request: %v \n", err)
 	}
+
+	cancel()
 }
 
 func TestBookingTooMuchSeats(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0),
-		notConfirmed: make([]*booking.BookingData, 0),
-		nextID:       1}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunUserService(ctx, true)
+	time.Sleep(time.Second * 3)
+
+	service := BService{Booking: make([]*booking.BookingData, 0),
+		NotConfirmed: make([]*booking.BookingData, 0),
+		NextID:       1}
 
 	rspCreate := &booking.CreateBookingResult{}
 	_ = service.CreateBooking(context.TODO(),
@@ -76,12 +112,25 @@ func TestBookingTooMuchSeats(t *testing.T) {
 	if rspCreate.Id != -1 {
 		t.Errorf("Expected no booking because of too much seats!\n")
 	}
+
+	cancel()
 }
 
 func TestBookingTwoConfirmed(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0),
-		notConfirmed: make([]*booking.BookingData, 0),
-		nextID:       1}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunUserService(ctx, true)
+	time.Sleep(time.Second * 3)
+
+	service := BService{Booking: make([]*booking.BookingData, 0),
+		NotConfirmed: make([]*booking.BookingData, 0),
+		NextID:       1}
 
 	rspCreate := &booking.CreateBookingResult{}
 	_ = service.CreateBooking(context.TODO(),
@@ -110,12 +159,25 @@ func TestBookingTwoConfirmed(t *testing.T) {
 	if rspConfirm3.Successful {
 		t.Errorf("Booking 3 expected not successful")
 	}
+
+	cancel()
 }
 
 func TestBookingDelete(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0),
-		notConfirmed: make([]*booking.BookingData, 0),
-		nextID:       1}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunUserService(ctx, true)
+	time.Sleep(time.Second * 3)
+
+	service := BService{Booking: make([]*booking.BookingData, 0),
+		NotConfirmed: make([]*booking.BookingData, 0),
+		NextID:       1}
 	rsp := &booking.GetListResult{}
 
 	rspCreate := &booking.CreateBookingResult{}
@@ -185,12 +247,24 @@ func TestBookingDelete(t *testing.T) {
 		t.Error("Expected no booking with this ID!")
 	}
 
+	cancel()
 }
 
 func TestCreateWrongID(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0),
-		notConfirmed: make([]*booking.BookingData, 0),
-		nextID:       1}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunUserService(ctx, true)
+	time.Sleep(time.Second * 3)
+
+	service := BService{Booking: make([]*booking.BookingData, 0),
+		NotConfirmed: make([]*booking.BookingData, 0),
+		NextID:       1}
 
 	rspCreate := &booking.CreateBookingResult{}
 	_ = service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 200, ShowID: 1, Seats: 1},
@@ -215,12 +289,25 @@ func TestCreateWrongID(t *testing.T) {
 	if rspCreate.Id != -1 {
 		t.Error("Expected no booking")
 	}
+
+	cancel()
 }
 
 func TestFromShowDelete(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0),
-		notConfirmed: make([]*booking.BookingData, 0),
-		nextID:       1}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunUserService(ctx, true)
+	time.Sleep(time.Second * 3)
+
+	service := BService{Booking: make([]*booking.BookingData, 0),
+		NotConfirmed: make([]*booking.BookingData, 0),
+		NextID:       1}
 
 	rspCreate1 := &booking.CreateBookingResult{}
 	_ = service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 1, Seats: 1}, rspCreate1)
@@ -287,12 +374,25 @@ func TestFromShowDelete(t *testing.T) {
 	if rspDelete.Successful {
 		t.Error("Expected failing deleting!")
 	}
+
+	cancel()
 }
 
 func TestExist(t *testing.T) {
-	service := BService{booking: make([]*booking.BookingData, 0),
-		notConfirmed: make([]*booking.BookingData, 0),
-		nextID:       1}
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go RunCinemaService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunMovieService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunShowService(ctx, true)
+	time.Sleep(time.Second * 3)
+	go RunUserService(ctx, true)
+	time.Sleep(time.Second * 3)
+
+	service := BService{Booking: make([]*booking.BookingData, 0),
+		NotConfirmed: make([]*booking.BookingData, 0),
+		NextID:       1}
 
 	rspCreate1 := &booking.CreateBookingResult{}
 	_ = service.CreateBooking(context.TODO(), &booking.CreateBookingRequest{UserID: 1, ShowID: 1, Seats: 1}, rspCreate1)
@@ -324,4 +424,113 @@ func TestExist(t *testing.T) {
 		t.Error("Expected that booking not exists")
 	}
 
+	cancel()
+}
+
+func RunCinemaService(ctx context.Context, test bool) {
+	port := 0
+	if test {
+		rand.Seed(time.Now().UTC().UnixNano())
+		port = 1024 + rand.Intn(1000) + 8
+	}
+
+	service := micro.NewService(
+		micro.Name("go.micro.services.cinema"),
+		micro.Address(fmt.Sprintf(":%v", port)),
+		micro.Context(ctx),
+	)
+
+	if !test {
+		service.Init()
+	}
+
+	err := cinema.RegisterCinemaHandler(service.Server(), &cs.CService{CHall: cs.ExampleData(), NextID: 3})
+	if err != nil {
+		fmt.Println(err)
+	}
+	r := service.Run()
+	if r != nil {
+		log.Fatalf("Running service failed! %v\n", r.Error())
+	}
+}
+
+func RunMovieService(ctx context.Context, test bool) {
+	port := 0
+	if test {
+		rand.Seed(time.Now().UTC().UnixNano())
+		port = 1024 + rand.Intn(1000) + 8
+	}
+
+	service := micro.NewService(
+		micro.Name("go.micro.services.movie"),
+		micro.Address(fmt.Sprintf(":%v", port)),
+		micro.Context(ctx),
+	)
+
+	if !test {
+		service.Init()
+	}
+
+	err := movie.RegisterMovieHandler(service.Server(), &ms.MService{Movie: ms.ExampleData(), NextID: 5})
+	if err != nil {
+		fmt.Println(err)
+	}
+	r := service.Run()
+	if r != nil {
+		log.Fatalf("Running service failed! %v\n", r.Error())
+	}
+}
+
+func RunShowService(ctx context.Context, test bool) {
+	port := 0
+	if test {
+		rand.Seed(time.Now().UTC().UnixNano())
+		port = 1024 + rand.Intn(1000) + 8
+	}
+
+	service := micro.NewService(
+		micro.Name("go.micro.services.show"),
+		micro.Address(fmt.Sprintf(":%v", port)),
+		micro.Context(ctx),
+	)
+
+	if !test {
+		service.Init()
+	}
+
+	err := show.RegisterShowHandler(service.Server(), &shs.SService{Show: shs.ExampleData(), NextID: 5})
+	if err != nil {
+		fmt.Println(err)
+	}
+	r := service.Run()
+	if r != nil {
+		log.Fatalf("Running service failed! %v\n", r.Error())
+	}
+}
+
+func RunUserService(ctx context.Context, test bool) {
+	port := 0
+	if test {
+		rand.Seed(time.Now().UTC().UnixNano())
+		port = 1024 + rand.Intn(1000) + 8
+	}
+
+	service := micro.NewService(
+		micro.Name("go.micro.services.user"),
+		micro.Address(fmt.Sprintf(":%v", port)),
+		micro.Context(ctx),
+	)
+
+	if !test {
+		service.Init()
+	}
+
+	err := user.RegisterUserHandler(service.Server(), &us.UService{User: us.ExampleData(), NextID: 5})
+	if err != nil {
+		fmt.Println(err)
+	}
+	r := service.Run()
+	if r != nil {
+		log.Fatalf("Running service failed! %v\n", r.Error())
+	}
 }
