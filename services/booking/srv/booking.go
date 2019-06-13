@@ -3,13 +3,14 @@ package srv
 import (
 	"context"
 	"fmt"
+	"log"
+	"sync"
+
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
 	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
-	"log"
-	"sync"
 )
 
 //Struct for a bookingservice
