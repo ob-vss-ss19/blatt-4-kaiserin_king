@@ -3,10 +3,11 @@ package srv
 import (
 	"context"
 	"fmt"
-	"github.com/micro/go-micro"
-	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 	"log"
 	"sync"
+
+	"github.com/micro/go-micro"
+	user "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/user/proto"
 )
 
 type UService struct {
@@ -150,16 +151,13 @@ func (us *UService) CheckBookingOfUser(userID int32) bool {
 	return true
 }
 
-func RunService(ctx context.Context, test bool) {
+func RunService() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.user"),
 		micro.Address(fmt.Sprintf(":%v", 1035)),
-		micro.Context(ctx),
 	)
 
-	if !test {
-		service.Init()
-	}
+	service.Init()
 
 	err := user.RegisterUserHandler(service.Server(), &UService{User: ExampleData(), NextID: 5})
 	if err != nil {

@@ -114,7 +114,7 @@ func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDel
 		if b.ShowID == req.Id {
 			//bs.booking = append(bs.booking[:i], bs.booking[i+1:]...)
 			bs.Mux.Lock()
-			bs.deleteFromBooking(i - counter, b.UserID, b.Id)
+			bs.deleteFromBooking(i-counter, b.UserID, b.Id)
 			bs.Mux.Unlock()
 			counter++
 			success = true
@@ -125,7 +125,7 @@ func (bs *BService) FromShowDelete(ctx context.Context, req *booking.FromShowDel
 		if b.ShowID == req.Id {
 			//bs.notConfirmed = append(bs.notConfirmed[:i], bs.notConfirmed[i+1:]...)
 			bs.Mux.Lock()
-			bs.deleteFromNotConfirmed(i - counter, b.UserID, b.Id)
+			bs.deleteFromNotConfirmed(i-counter, b.UserID, b.Id)
 			bs.Mux.Unlock()
 			counter++
 			success = true
@@ -264,16 +264,13 @@ func (bs *BService) Exist(ctx context.Context, req *booking.ExistRequest, rsp *b
 	return nil
 }
 
-func RunService(ctx context.Context, test bool) {
+func RunService() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.booking"),
 		micro.Address(fmt.Sprintf(":%v", 1034)),
-		micro.Context(ctx),
 	)
 
-	if !test {
-		service.Init()
-	}
+	service.Init()
 
 	err := booking.RegisterBookingHandler(service.Server(),
 		&BService{Booking: ExampleData(),

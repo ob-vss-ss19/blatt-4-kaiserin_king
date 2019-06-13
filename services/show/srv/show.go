@@ -3,14 +3,15 @@ package srv
 import (
 	"context"
 	"fmt"
+	"log"
+	"sync"
+
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
 	booking "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/booking/proto"
 	cinema "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/cinema/proto"
 	movie "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/movie/proto"
 	show "github.com/ob-vss-ss19/blatt-4-kaiserin_king/services/show/proto"
-	"log"
-	"sync"
 )
 
 type SService struct {
@@ -70,7 +71,7 @@ func (shs *SService) FromHallDelete(ctx context.Context, req *show.DeleteShowOfH
 	for i, v := range shs.Show {
 		if v.HallID == req.HallID {
 			shs.mux.Lock()
-			shs.delete(i - counter, v.Id)
+			shs.delete(i-counter, v.Id)
 			shs.mux.Unlock()
 			counter++
 			success = true
@@ -90,7 +91,7 @@ func (shs *SService) FromMovieDelete(ctx context.Context, req *show.DeleteShowOf
 	for i, v := range shs.Show {
 		if v.MovieID == req.MovieID {
 			shs.mux.Lock()
-			shs.delete(i - counter, v.Id)
+			shs.delete(i-counter, v.Id)
 			shs.mux.Unlock()
 			counter++
 			success = true
@@ -186,17 +187,13 @@ func (shs *SService) delete(index int, showID int32) {
 	}
 }
 
-func RunService(ctx context.Context, test bool) {
+func RunService() {
 	service := micro.NewService(
 		micro.Name("go.micro.services.show"),
 		micro.Address(fmt.Sprintf(":%v", 1033)),
-		micro.Context(ctx),
 	)
 
-	if !test {
-		service.Init()
-	}
-
+	service.Init()
 	err := show.RegisterShowHandler(service.Server(), &SService{Show: ExampleData(), NextID: 5})
 	if err != nil {
 		fmt.Println(err)
